@@ -23,6 +23,8 @@ private:
 	FVector GetRandomPointInVolume();
 	float GetLifespanVal();
 
+	void SetSpawnObstacleNumber();
+
 	class UBoxComponent* SpawnVolume;
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
@@ -37,11 +39,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	float SpawnCooldown;
 
-	UPROPERTY(EditAnywhere, Category = Spawner)
-	bool SparkingMode;
+	int32 SpawnObstacleNumber;
 
-	UPROPERTY(EditAnywhere, Category = Spawner)
-	float SparklesVelocity;
+	//UPROPERTY(EditAnywhere, Category = Spawner)
+	//bool SparkingMode;
+
+	//UPROPERTY(EditAnywhere, Category = Spawner)
+	//float SparklesVelocity;
 
 	FTimerHandle SpawnCooldownTimer;
 
