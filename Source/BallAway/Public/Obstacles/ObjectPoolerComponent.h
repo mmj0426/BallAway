@@ -2,10 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../BallAway.h"
 #include "Components/ActorComponent.h"
+
 #include "ObjectPoolerComponent.generated.h"
 
+class AObstacle;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BALLAWAY_API UObjectPoolerComponent : public UActorComponent
@@ -13,16 +15,22 @@ class BALLAWAY_API UObjectPoolerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UObjectPoolerComponent();
 
-protected:
-	// Called when the game starts
+	UObjectPoolerComponent();
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	AObstacle* GetPooledObject();
+
+private:
+
+	UPROPERTY(EditAnywhere, Category = ObjectPooler)
+	TSubclassOf<class AObstacle> PooledObjectSubClass;
+
+	UPROPERTY(EditAnywhere, Category = ObjectPooler)
+	int PoolSize;
+
+	TArray<AObstacle*> Pool;
+
 
 		
 };
