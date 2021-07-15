@@ -42,7 +42,7 @@ void AObstacle::Tick(float DeltaTime)
 	if (Active)
 	{
 		
-		FVector MoveVector = FVector(GetActorLocation().X - DescentSpeed, GetActorLocation().Y, GetActorLocation().Z);
+		FVector MoveVector = FVector(GetActorLocation().X , GetActorLocation().Y - DescentSpeed, GetActorLocation().Z);
 		//FLatentActionInfo LatentInfo;
 
 		SetActorLocation(MoveVector);

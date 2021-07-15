@@ -8,6 +8,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Math/UnrealMathUtility.h"
 
 AObstacleSpawner::AObstacleSpawner()
 {
@@ -16,6 +17,8 @@ AObstacleSpawner::AObstacleSpawner()
 	SpawnCooldown = 3.f;
 	//SparkingMode = false;
 	//SparklesVelocity = 100.f;
+	ObstacleMin = 2;
+	ObstacleMax = 6;
 	SpawnObstacleNumber = 0;
 
 	SpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolume"));
@@ -36,6 +39,7 @@ FVector AObstacleSpawner::GetRandomPointInVolume()
 {
 	FVector SpawnOrigin = SpawnVolume->Bounds.Origin;
 	FVector SpawnExtent = SpawnVolume->Bounds.BoxExtent;
+	UE_LOG(LogTemp, Warning, TEXT("SpawnVolume Extent : %f, %f, %f"), SpawnExtent.X, SpawnExtent.Y, SpawnExtent.Z);
 
 	return UKismetMathLibrary::RandomPointInBoundingBox(SpawnOrigin, SpawnExtent);
 }
@@ -47,7 +51,7 @@ float AObstacleSpawner::GetLifespanVal()
 
 void AObstacleSpawner::SetSpawnObstacleNumber()
 {
-	SpawnObstacleNumber = UKismetMathLibrary::RandomInteger(6) + 1;
+	SpawnObstacleNumber = FMath::RandRange(ObstacleMin,ObstacleMax);
 	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d"), SpawnObstacleNumber);
 }
 
@@ -66,8 +70,8 @@ void AObstacleSpawner::Spawn()
 			return;
 		}
 
-		FVector ActorLocation;
-		ActorLocation = GetRandomPointInVolume();
+		FVector ActorLocation = FVector(GetRandomPointInVolume().X, SpawnVolume->Bounds.BoxExtent.Y, 20.f);
+		//ActorLocation = GetRandomPointInVolume();
 
 		PoolableActor->SetActorLocation(ActorLocation);
 		PoolableActor->SetLifeSpan(GetLifespanVal());

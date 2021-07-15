@@ -41,6 +41,9 @@ private:
 
 	int32 SpawnObstacleNumber;
 
+	int32 ObstacleMin;
+	int32 ObstacleMax;
+
 	//UPROPERTY(EditAnywhere, Category = Spawner)
 	//bool SparkingMode;
 
