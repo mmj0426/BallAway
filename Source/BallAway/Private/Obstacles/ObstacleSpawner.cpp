@@ -3,25 +3,85 @@
 
 #include "Obstacles/ObstacleSpawner.h"
 
-// Sets default values
+#include "ObjectPoolerComponent.h"
+#include "Obstacle.h"
+
+#include "Components/BoxComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+
 AObstacleSpawner::AObstacleSpawner()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
+	SpawnCooldown = 3.f;
+	SparkingMode = false;
+	SparklesVelocity = 100.f;
+
+	SpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolume"));
+	RootComponent = SpawnVolume;
+
+	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
 
 }
 
-// Called when the game starts or when spawned
 void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 }
 
-// Called every frame
-void AObstacleSpawner::Tick(float DeltaTime)
+FVector AObstacleSpawner::GetRandomPointInVolume()
 {
-	Super::Tick(DeltaTime);
+	FVector SpawnOrigin = SpawnVolume->Bounds.Origin;
+	FVector SpawnExtent = SpawnVolume->Bounds.BoxExtent;
 
+	return UKismetMathLibrary::RandomPointInBoundingBox(SpawnOrigin, SpawnExtent);
+}
+
+float AObstacleSpawner::GetLifespanVal()
+{
+	return 5.0f;
+}
+
+void AObstacleSpawner::Spawn()
+{
+	AObstacle* PoolableActor = ObjectPooler->GetPooledObject();
+
+	if (PoolableActor == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained. Retrying in %f seconds."), SpawnCooldown);
+		GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
+		return;
+	}
+
+	FVector ActorLocation;
+	float SparklesVelocityTmp;
+	FVector SparklesDirectionTmp;
+
+	/* if sparkling mode is enabled all objects would spawn from the center of the spawner and will have a velocity outwards*/
+	if (SparkingMode)
+	{
+		ActorLocation = SpawnVolume->Bounds.Origin;
+		SparklesVelocityTmp = SparklesVelocity;
+		SparklesDirectionTmp = UKismetMathLibrary::RandomUnitVector();
+	}
+	/* otherwise objects should spawn randomly within the spawn box extents */
+	else
+	{
+		ActorLocation = GetRandomPointInVolume();
+		SparklesVelocityTmp = 0.f;
+		SparklesDirectionTmp = FVector().ZeroVector;
+	}
+
+	PoolableActor->SetActorLocation(ActorLocation);
+	//UE_LOG(LogTemp, Warning, TEXT("Location : %f %f %f"), ActorLocation.X, ActorLocation.Y, ActorLocation.Z);
+	PoolableActor->SetLifeSpan(GetLifespanVal());
+	PoolableActor->SetActive(true);
+	//PoolableActor->SetVelocity(SparklesVelocity);
+	//PoolableActor->SetDirection(SparklesDirectionTmp);
+
+	/* setup next spawn call within a given cooldown */
+	GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 }
 

@@ -3,6 +3,8 @@
 
 #include "Obstacles/Obstacle.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 AObstacle::AObstacle()
 {
@@ -17,7 +19,7 @@ AObstacle::AObstacle()
 	{
 		StaticMesh->SetStaticMesh(CubeMesh.Object);
 		StaticMesh->SetRelativeLocation(FVector(0.f,0.f,0.f));
-		StaticMesh->SetWorldScale3D(FVector(1.f));
+		StaticMesh->SetWorldScale3D(FVector(0.8f));
 		StaticMesh->SetSimulatePhysics(false);
 	}
 
@@ -37,10 +39,23 @@ void AObstacle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Active)
+	{
+		
+		FVector MoveVector = FVector(GetActorLocation().X - DescentSpeed, GetActorLocation().Y, GetActorLocation().Z);
+		//FLatentActionInfo LatentInfo;
+
+		SetActorLocation(MoveVector);
+		//UKismetSystemLibrary::MoveComponentTo(RootComponent, MoveVector, GetActorRotation(), false, false, 2.f, EMoveComponentAction::Type::Move, LatentInfo);
+	}
+
 }
 
 void AObstacle::SetLifeSpan(float newLifeSpan)
 {
+	Lifespan = newLifeSpan;
+	//UE_LOG(LogTemp, Warning, TEXT("Lifespan : %s"), Lifespan);
+	GetWorldTimerManager().SetTimer(LifespanTimer, this, &AObstacle::Deactivate, Lifespan, false);
 }
 
 void AObstacle::SetActive(bool newActive)
@@ -62,6 +77,11 @@ void AObstacle::SetVelocity(float newVelocity)
 void AObstacle::SetDirection(FVector newDirection)
 {
 	Direction = newDirection;
+}
+
+void AObstacle::SetDescentSpeed(float newSpeed)
+{
+	DescentSpeed = newSpeed;
 }
 
 void AObstacle::Deactivate()

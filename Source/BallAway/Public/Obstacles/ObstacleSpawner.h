@@ -2,9 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../BallAway.h"
 #include "GameFramework/Actor.h"
 #include "ObstacleSpawner.generated.h"
+
+class UObjectPoolerComponent;
 
 UCLASS()
 class BALLAWAY_API AObstacleSpawner : public AActor
@@ -15,12 +17,34 @@ public:
 	// Sets default values for this actor's properties
 	AObstacleSpawner();
 
-protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+	FVector GetRandomPointInVolume();
+	float GetLifespanVal();
+
+	class UBoxComponent* SpawnVolume;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	UObjectPoolerComponent* ObjectPooler;
+
+	//UPROPERTY(EditAnywhere, Category = Spawner)
+	//float LifespanMin;
+
+	//UPROPERTY(EditAnywhere, Category = Spawner)
+	//float LifespanMax;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	float SpawnCooldown;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	bool SparkingMode;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	float SparklesVelocity;
+
+	FTimerHandle SpawnCooldownTimer;
+
+	void Spawn();
 
 };

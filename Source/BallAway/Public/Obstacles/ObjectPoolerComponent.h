@@ -29,8 +29,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = ObjectPooler)
 	int PoolSize;
 
+	UPROPERTY(EditAnywhere, Category = ObjectPooler)
+	float DescentSpeed;
+
 	TArray<AObstacle*> Pool;
 
-
-		
 };

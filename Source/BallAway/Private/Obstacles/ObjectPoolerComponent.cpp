@@ -8,6 +8,7 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	PoolSize = 50.f;
+	DescentSpeed = 2.f;
 }
 
 void UObjectPoolerComponent::BeginPlay()
@@ -23,6 +24,7 @@ void UObjectPoolerComponent::BeginPlay()
 			{
 				AObstacle* PoolableObstacle = World->SpawnActor<AObstacle>(PooledObjectSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				PoolableObstacle->SetActive(false);
+				PoolableObstacle->SetDescentSpeed(DescentSpeed);
 				Pool.Add(PoolableObstacle);
 
 			}

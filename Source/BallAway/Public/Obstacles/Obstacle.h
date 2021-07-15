@@ -26,11 +26,16 @@ public:
 
 	void SetVelocity(float newVelocity);
 	void SetDirection(FVector newDirection);
+	void SetDescentSpeed(float newSpeed);
 
 protected:
 
 	class UStaticMeshComponent* StaticMesh;
 
+	float DescentSpeed;
+
+	float Lifespan;
+	FTimerHandle LifespanTimer;
 	bool Active;
 	float Velocity;
 	FVector Direction;
