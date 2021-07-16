@@ -19,7 +19,7 @@ AObstacle::AObstacle()
 	{
 		StaticMesh->SetStaticMesh(CubeMesh.Object);
 		StaticMesh->SetRelativeLocation(FVector(0.f,0.f,0.f));
-		StaticMesh->SetWorldScale3D(FVector(0.8f));
+		StaticMesh->SetWorldScale3D(FVector(1.8f));
 		StaticMesh->SetSimulatePhysics(false);
 	}
 

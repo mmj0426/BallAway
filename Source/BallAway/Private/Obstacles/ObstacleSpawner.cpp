@@ -15,10 +15,12 @@ AObstacleSpawner::AObstacleSpawner()
 	PrimaryActorTick.bCanEverTick = false;
 
 	SpawnCooldown = 3.f;
-	//SparkingMode = false;
-	//SparklesVelocity = 100.f;
+
+	LineNumMax = 7;
+	// 장애물의 개수는 2 ~ 6
 	ObstacleMin = 2;
 	ObstacleMax = 6;
+
 	SpawnObstacleNumber = 0;
 
 	SpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolume"));
@@ -35,29 +37,44 @@ void AObstacleSpawner::BeginPlay()
 	GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 }
 
-FVector AObstacleSpawner::GetRandomPointInVolume()
-{
-	FVector SpawnOrigin = SpawnVolume->Bounds.Origin;
-	FVector SpawnExtent = SpawnVolume->Bounds.BoxExtent;
-	UE_LOG(LogTemp, Warning, TEXT("SpawnVolume Extent : %f, %f, %f"), SpawnExtent.X, SpawnExtent.Y, SpawnExtent.Z);
-
-	return UKismetMathLibrary::RandomPointInBoundingBox(SpawnOrigin, SpawnExtent);
-}
 
 float AObstacleSpawner::GetLifespanVal()
 {
 	return 5.0f;
 }
 
-void AObstacleSpawner::SetSpawnObstacleNumber()
+
+void AObstacleSpawner::ChooseSpawnLine()
 {
-	SpawnObstacleNumber = FMath::RandRange(ObstacleMin,ObstacleMax);
-	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d"), SpawnObstacleNumber);
+	// 1. 생성할 오브젝트의 개수를 정함
+	SpawnObstacleNumber = FMath::RandRange(ObstacleMin, ObstacleMax);
+
+	UE_LOG(LogTemp, Warning, TEXT("Obstacle Number : %d."), SpawnObstacleNumber);
+
+	// 2. 오브젝트를 생성할 라인을 정해 배열에 저장
+	for (int i = 0; i < SpawnObstacleNumber; i++)
+	{
+		while (true)
+		{
+			int32 SpawnLine = FMath::RandRange(0, LineNumMax - 1);
+			if (SpawnLineNumber.Contains(SpawnLine))
+			{
+				continue;
+			}
+			else
+			{
+				SpawnLineNumber.Emplace(SpawnLine);
+				break;
+			}
+		}
+
+	}
+	
 }
 
 void AObstacleSpawner::Spawn()
 {
-	SetSpawnObstacleNumber();
+	ChooseSpawnLine();
 
 	for (int i = 0; i < SpawnObstacleNumber; i++)
 	{
@@ -69,14 +86,18 @@ void AObstacleSpawner::Spawn()
 			GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 			return;
 		}
+		
+		float Distance = 2 * SpawnVolume->Bounds.BoxExtent.X;
+		float ObstacleXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1/2 - Distance / LineNumMax * SpawnLineNumber[i];
+		UE_LOG(LogTemp, Warning, TEXT("Spawn Number : %d."), SpawnLineNumber[i]);
 
-		FVector ActorLocation = FVector(GetRandomPointInVolume().X, SpawnVolume->Bounds.BoxExtent.Y, 20.f);
-		//ActorLocation = GetRandomPointInVolume();
+		FVector ActorLocation = FVector(ObstacleXLoc, SpawnVolume->Bounds.BoxExtent.Y, 20.f);
 
 		PoolableActor->SetActorLocation(ActorLocation);
 		PoolableActor->SetLifeSpan(GetLifespanVal());
 		PoolableActor->SetActive(true);
 	}
+	SpawnLineNumber.Empty();
 
 
 	GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);

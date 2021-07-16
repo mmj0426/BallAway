@@ -20,37 +20,29 @@ public:
 	virtual void BeginPlay() override;
 
 private:
-	FVector GetRandomPointInVolume();
+
 	float GetLifespanVal();
 
-	void SetSpawnObstacleNumber();
+	void ChooseSpawnLine();
 
 	class UBoxComponent* SpawnVolume;
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	UObjectPoolerComponent* ObjectPooler;
 
-	//UPROPERTY(EditAnywhere, Category = Spawner)
-	//float LifespanMin;
-
-	//UPROPERTY(EditAnywhere, Category = Spawner)
-	//float LifespanMax;
-
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	float SpawnCooldown;
+
+	FTimerHandle SpawnCooldownTimer;
+
+	TArray<int32> SpawnLineNumber;
 
 	int32 SpawnObstacleNumber;
 
 	int32 ObstacleMin;
 	int32 ObstacleMax;
+	int32 LineNumMax;
 
-	//UPROPERTY(EditAnywhere, Category = Spawner)
-	//bool SparkingMode;
-
-	//UPROPERTY(EditAnywhere, Category = Spawner)
-	//float SparklesVelocity;
-
-	FTimerHandle SpawnCooldownTimer;
 
 	void Spawn();
 
