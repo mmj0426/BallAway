@@ -14,7 +14,7 @@ AObstacleSpawner::AObstacleSpawner()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	SpawnCooldown = 3.f;
+	SpawnCooldown = 1.f;
 
 	LineNumMax = 7;
 	// 장애물의 개수는 2 ~ 6
@@ -26,6 +26,12 @@ AObstacleSpawner::AObstacleSpawner()
 	SpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolume"));
 	RootComponent = SpawnVolume;
 
+	DeactivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("DeactivateVolume"));
+	DeactivateVolume->SetupAttachment(RootComponent);
+	DeactivateVolume->SetRelativeScale3D(FVector(0.5f,0.5f,0.5f));
+	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::OnOverlapBegin);
+	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
+
 	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
 
 }
@@ -36,13 +42,6 @@ void AObstacleSpawner::BeginPlay()
 	
 	GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 }
-
-
-float AObstacleSpawner::GetLifespanVal()
-{
-	return 5.0f;
-}
-
 
 void AObstacleSpawner::ChooseSpawnLine()
 {
@@ -72,30 +71,41 @@ void AObstacleSpawner::ChooseSpawnLine()
 	
 }
 
+void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto ObstacleActor = Cast<AObstacle>(OtherActor);
+	if (ObstacleActor != nullptr)
+	{
+		ObstacleActor->Deactivate();
+		//ObstacleActor->SetActive(false);
+	}
+}
+
 void AObstacleSpawner::Spawn()
 {
 	ChooseSpawnLine();
 
 	for (int i = 0; i < SpawnObstacleNumber; i++)
 	{
-		AObstacle* PoolableActor = ObjectPooler->GetPooledObject();
+		AObstacle* ObstacleActor = ObjectPooler->GetPooledObject();
 
-		if (PoolableActor == nullptr)
+		// Obstacle 클래스가 null 이면 오류 띄우고 return
+		if (ObstacleActor == nullptr)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained. Retrying in %f seconds."), SpawnCooldown);
 			GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 			return;
 		}
 		
+		// Obstacle 액터 위치 계산 및 보이게 하기
 		float Distance = 2 * SpawnVolume->Bounds.BoxExtent.X;
 		float ObstacleXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1/2 - Distance / LineNumMax * SpawnLineNumber[i];
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Number : %d."), SpawnLineNumber[i]);
 
 		FVector ActorLocation = FVector(ObstacleXLoc, SpawnVolume->Bounds.BoxExtent.Y, 20.f);
-
-		PoolableActor->SetActorLocation(ActorLocation);
-		PoolableActor->SetLifeSpan(GetLifespanVal());
-		PoolableActor->SetActive(true);
+		
+		ObstacleActor->SetActorLocation(ActorLocation);
+		ObstacleActor->SetActive(true);
 	}
 	SpawnLineNumber.Empty();
 

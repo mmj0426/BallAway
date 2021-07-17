@@ -10,7 +10,7 @@ AObstacle::AObstacle()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Velocity = 100.f;
+	//Velocity = 100.f;
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
@@ -41,7 +41,6 @@ void AObstacle::Tick(float DeltaTime)
 
 	if (Active)
 	{
-		
 		FVector MoveVector = FVector(GetActorLocation().X , GetActorLocation().Y - DescentSpeed, GetActorLocation().Z);
 		//FLatentActionInfo LatentInfo;
 
@@ -51,16 +50,17 @@ void AObstacle::Tick(float DeltaTime)
 
 }
 
-void AObstacle::SetLifeSpan(float newLifeSpan)
-{
-	Lifespan = newLifeSpan;
-	//UE_LOG(LogTemp, Warning, TEXT("Lifespan : %s"), Lifespan);
-	GetWorldTimerManager().SetTimer(LifespanTimer, this, &AObstacle::Deactivate, Lifespan, false);
-}
+//void AObstacle::SetLifeSpan(float newLifeSpan)
+//{
+//	Lifespan = newLifeSpan;
+//	//UE_LOG(LogTemp, Warning, TEXT("Lifespan : %s"), Lifespan);
+//	GetWorldTimerManager().SetTimer(LifespanTimer, this, &AObstacle::Deactivate, Lifespan, false);
+//}
 
 void AObstacle::SetActive(bool newActive)
 {
 	Active = newActive;
+	SetActorEnableCollision(true);
 	SetActorHiddenInGame(!newActive);
 }
 
@@ -69,15 +69,15 @@ bool AObstacle::IsActive()
 	return Active;
 }
 
-void AObstacle::SetVelocity(float newVelocity)
-{
-	Velocity = newVelocity;
-}
+//void AObstacle::SetVelocity(float newVelocity)
+//{
+//	Velocity = newVelocity;
+//}
 
-void AObstacle::SetDirection(FVector newDirection)
-{
-	Direction = newDirection;
-}
+//void AObstacle::SetDirection(FVector newDirection)
+//{
+//	Direction = newDirection;
+//}
 
 void AObstacle::SetDescentSpeed(float newSpeed)
 {
@@ -87,5 +87,6 @@ void AObstacle::SetDescentSpeed(float newSpeed)
 void AObstacle::Deactivate()
 {
 	SetActive(false);
+	SetActorEnableCollision(false);
 }
 

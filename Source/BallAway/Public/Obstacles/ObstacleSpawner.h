@@ -21,11 +21,15 @@ public:
 
 private:
 
-	float GetLifespanVal();
-
 	void ChooseSpawnLine();
 
 	class UBoxComponent* SpawnVolume;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* DeactivateVolume;
+
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	UObjectPoolerComponent* ObjectPooler;
