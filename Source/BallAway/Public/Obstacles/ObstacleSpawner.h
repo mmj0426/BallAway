@@ -42,7 +42,6 @@ private:
 	TArray<int32> SpawnLineNumber;
 
 	int32 SpawnObstacleNumber;
-
 	int32 ObstacleMin;
 	int32 ObstacleMax;
 	int32 LineNumMax;

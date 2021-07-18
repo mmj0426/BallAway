@@ -77,7 +77,6 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 	if (ObstacleActor != nullptr)
 	{
 		ObstacleActor->Deactivate();
-		//ObstacleActor->SetActive(false);
 	}
 }
 

@@ -19,11 +19,13 @@ public class BallAway : ModuleRules
 		});
 
         PublicIncludePaths.AddRange(new string[]
-{
+		{
             Path.Combine(ModuleDirectory, "Public"),
             Path.Combine(ModuleDirectory, "Public/GameMode"),
-			Path.Combine(ModuleDirectory, "Public/Obstacles")
-});
+			Path.Combine(ModuleDirectory, "Public/Obstacles"),
+			Path.Combine(ModuleDirectory, "Public/PlayerCharacter")
+		
+		});
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
