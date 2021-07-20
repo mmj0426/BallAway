@@ -76,6 +76,7 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 	auto ObstacleActor = Cast<AObstacle>(OtherActor);
 	if (ObstacleActor != nullptr)
 	{
+		// 여러 개의 장애물 중 해당 태그가 달린 오브젝트와 만날 때에만 Score를 갱신
 		if (ObstacleActor->ActorHasTag("Score Calculate Obstacle"))
 		{
 			PlayScore += 0.25f;
@@ -112,6 +113,7 @@ void AObstacleSpawner::Spawn()
 		ObstacleActor->SetActorLocation(ActorLocation);
 		ObstacleActor->SetActive(true);
 
+		// 여러 개의 장애물 중 한 개는 Score를 계산할 수 있음을 나타내는 태그를 달아줌.
 		if (i == 0)
 		{
 			ObstacleActor->Tags.Add("Score Calculate Obstacle");

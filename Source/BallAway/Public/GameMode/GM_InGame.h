@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../BallAway.h"
+
 #include "GameFramework/GameModeBase.h"
 #include "GM_InGame.generated.h"
 
@@ -17,4 +18,6 @@ class BALLAWAY_API AGM_InGame : public AGameModeBase
 public : 
 	AGM_InGame();
 
+	void Save();
+	void Load();
 };
