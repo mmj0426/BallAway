@@ -71,5 +71,6 @@ void AObstacle::Deactivate()
 {
 	SetActive(false);
 	SetActorEnableCollision(false);
+	Tags.Remove("Score Calculate Obstacle");
 }
 

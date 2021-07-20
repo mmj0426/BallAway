@@ -33,7 +33,7 @@ AObstacleSpawner::AObstacleSpawner()
 	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
 
 	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
-
+	PlayScore = 0.f;
 }
 
 void AObstacleSpawner::BeginPlay()
@@ -76,6 +76,11 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 	auto ObstacleActor = Cast<AObstacle>(OtherActor);
 	if (ObstacleActor != nullptr)
 	{
+		if (ObstacleActor->ActorHasTag("Score Calculate Obstacle"))
+		{
+			PlayScore += 0.25f;
+			UE_LOG(LogTemp, Warning, TEXT("Play Score : %f"), PlayScore);
+		}
 		ObstacleActor->Deactivate();
 	}
 }
@@ -83,6 +88,7 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 void AObstacleSpawner::Spawn()
 {
 	ChooseSpawnLine();
+
 
 	for (int i = 0; i < SpawnObstacleNumber; i++)
 	{
@@ -105,6 +111,11 @@ void AObstacleSpawner::Spawn()
 		
 		ObstacleActor->SetActorLocation(ActorLocation);
 		ObstacleActor->SetActive(true);
+
+		if (i == 0)
+		{
+			ObstacleActor->Tags.Add("Score Calculate Obstacle");
+		}
 	}
 	SpawnLineNumber.Empty();
 

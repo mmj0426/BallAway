@@ -26,6 +26,8 @@ protected :
 private : 
 	FVector FirstLocation;
 	FVector CurrentLocation;
+	FVector PrevLocation;
+
 	FVector DesiredLocation;
 
 	FVector MoveDirection;

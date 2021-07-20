@@ -14,6 +14,7 @@ void APC_PlayerCharacter::BeginPlay()
 	SetInputMode(InputMode);
 
 	BAPlayer = Cast<APlayerCharacter>(GetPawn());
+	
 }
 
 void APC_PlayerCharacter::SetupInputComponent()
@@ -27,6 +28,7 @@ void APC_PlayerCharacter::SetupInputComponent()
 
 void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector TouchLocation)
 {
+	// 첫 터치 위치
 	FirstLocation = TouchLocation;
 
 	// 처음 터치.X ~ 현재 플레이어.X 까지의 거리
@@ -35,6 +37,16 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 
 void APC_PlayerCharacter::OnTouchTick(ETouchIndex::Type TouchIndex, FVector TouchLocation)
 {
+
+	// 현재 터치 위치
+	CurrentLocation = TouchLocation;
+
+	// 공이 움직여야할 방향 (좌, 우)
+	MoveDirection = (CurrentLocation - PrevLocation).GetSafeNormal();
+
+	DistanceFromTouch = FMath::Abs(FirstLocation.X - CurrentLocation.X);
+
+	DesiredLocation = FVector(BAPlayer->GetActorLocation().X + DistanceFromTouch, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z);
 
 	if (FMath::Abs(DesiredLocation.X - BAPlayer->GetActorLocation().X) > 50.f)
 	{
@@ -47,14 +59,10 @@ void APC_PlayerCharacter::OnTouchTick(ETouchIndex::Type TouchIndex, FVector Touc
 			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), 1.f);
 		}
 	}
+	
 
-	CurrentLocation = TouchLocation;
 
-	DistanceFromTouch = FMath::Abs(FirstLocation.X - CurrentLocation.X);
-
-	MoveDirection = (CurrentLocation - FirstLocation).GetSafeNormal();
-
-	DesiredLocation = FVector(BAPlayer->GetActorLocation().X + DistanceFromTouch, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z);
+	PrevLocation = CurrentLocation;
 
 	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%f"), FMath::Abs(GetActorLocation().Y - DesiredLocation.Y)));
 	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("%f"), GetActorLocation().Y));

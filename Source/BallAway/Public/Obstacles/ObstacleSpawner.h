@@ -46,6 +46,7 @@ private:
 	int32 ObstacleMax;
 	int32 LineNumMax;
 
+	float PlayScore;
 
 	void Spawn();
 
