@@ -3,6 +3,8 @@
 #pragma once
 
 #include "../BallAway.h"
+
+#include "ObstacleSpawner.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
 #include "BAGameInstance.generated.h"
@@ -16,13 +18,32 @@ public :
 	FObstacleSizeProb() : Phase1(0.f),Phase2(0.f),Phase3(0.f) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	float Phase1;
+	int32 Phase1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	float Phase2;
+	int32 Phase2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	float Phase3;
+	int32 Phase3;
+
+	int32 GetPhase(EPhase CurrentPhase)
+	{
+		switch (CurrentPhase)
+		{
+		case EPhase::Phase1:
+			return Phase1;
+
+		case EPhase::Phase2:
+			return Phase2;
+
+		case EPhase::Phase3:
+			return Phase3;
+
+		default:
+			return 0;
+		}
+		return 0;
+	}
 };
 
 UCLASS()
@@ -34,7 +55,8 @@ public :
 	UBAGameInstance();
 	virtual void Init() override;
 
-	FObstacleSizeProb* GetObstacleSizeProb(int Size);
+	FObstacleSizeProb* GetObstacleSizeProb(int32 Size);
+
 	
 private :
 	UPROPERTY()

@@ -17,10 +17,10 @@ UBAGameInstance::UBAGameInstance()
 void UBAGameInstance::Init()
 {
 	Super::Init();
-	BALOG(Warning,TEXT("Prob Size 2 Phase 1 : %f"),GetObstacleSizeProb(2)->Phase1);
+	//BALOG(Warning,TEXT("Prob Size 2 Phase 1 : %d"),GetObstacleSizeProb(2)->GetPhase(EPhase::Phase1));
 }
 
-FObstacleSizeProb* UBAGameInstance::GetObstacleSizeProb(int Size)
+FObstacleSizeProb* UBAGameInstance::GetObstacleSizeProb(int32 Size)
 {
 	return ObstacleSizeProbTable->FindRow<FObstacleSizeProb>(*FString::FromInt(Size),TEXT(""));
 }

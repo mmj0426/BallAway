@@ -8,6 +8,14 @@
 
 class UObjectPoolerComponent;
 
+UENUM(BlueprintType)
+enum class EPhase : uint8
+{
+	Phase1 UMETA(DisplayName = "Obstacle Phase"),
+	Phase2 UMETA(DisplayName = "Obstacle Phase"),
+	Phase3 UMETA(DisplayName = "Obstacle Phase")
+};
+
 UCLASS()
 class BALLAWAY_API AObstacleSpawner : public AActor
 {
@@ -20,8 +28,6 @@ public:
 	virtual void BeginPlay() override;
 
 private:
-
-	void ChooseSpawnLine();
 
 	class UBoxComponent* SpawnVolume;
 
@@ -37,6 +43,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	float SpawnCooldown;
 
+	void DecideObstacleSize();
+	void ChooseSpawnLine();
+	void Spawn();
+
+private : 
+
+	// 장애물 스폰 관련 변수
 	FTimerHandle SpawnCooldownTimer;
 
 	TArray<int32> SpawnLineNumber;
@@ -46,8 +59,14 @@ private:
 	int32 ObstacleMax;
 	int32 LineNumMax;
 
+	// 점수
 	float PlayScore;
 
-	void Spawn();
+	// 페이즈 관련 변수
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Phase", meta = (AllowPrivateAccess = true))
+	EPhase CurrentPhase;
+
+
+
 
 };

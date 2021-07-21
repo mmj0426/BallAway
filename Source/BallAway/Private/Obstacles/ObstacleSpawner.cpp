@@ -5,7 +5,9 @@
 
 #include "ObjectPoolerComponent.h"
 #include "Obstacle.h"
+#include "BAGameInstance.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/UnrealMathUtility.h"
@@ -34,6 +36,7 @@ AObstacleSpawner::AObstacleSpawner()
 
 	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
 	PlayScore = 0.f;
+	CurrentPhase = EPhase::Phase1;
 }
 
 void AObstacleSpawner::BeginPlay()
@@ -43,12 +46,50 @@ void AObstacleSpawner::BeginPlay()
 	GetWorldTimerManager().SetTimer(SpawnCooldownTimer, this, &AObstacleSpawner::Spawn, SpawnCooldown, false);
 }
 
+void AObstacleSpawner::DecideObstacleSize()
+{
+	auto BAGameInstance = Cast<UBAGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	int32 RandomNum = FMath::RandRange(0,99);
+	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
+
+	// 페이즈에 따른 장애물 크기 확률 적용
+	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase))
+	{
+		SpawnObstacleNumber = 2;
+	}
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase)
+		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase)))
+	{
+		SpawnObstacleNumber = 3;
+	}
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase)
+		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase)))
+	{
+		SpawnObstacleNumber = 4;
+	}
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase)
+		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(5)->GetPhase(CurrentPhase)))
+	{
+		SpawnObstacleNumber = 5;
+	}
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(5)->GetPhase(CurrentPhase)
+		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(5)->GetPhase(CurrentPhase)+ BAGameInstance->GetObstacleSizeProb(6)->GetPhase(CurrentPhase)))
+	{
+		SpawnObstacleNumber = 6;
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Obstacle Number : %d."), SpawnObstacleNumber);
+	return;
+
+}
+
 void AObstacleSpawner::ChooseSpawnLine()
 {
 	// 1. 생성할 오브젝트의 개수를 정함
-	SpawnObstacleNumber = FMath::RandRange(ObstacleMin, ObstacleMax);
+	//SpawnObstacleNumber = FMath::RandRange(ObstacleMin, ObstacleMax);
+	DecideObstacleSize();
 
-	UE_LOG(LogTemp, Warning, TEXT("Obstacle Number : %d."), SpawnObstacleNumber);
 
 	// 2. 오브젝트를 생성할 라인을 정해 배열에 저장
 	for (int i = 0; i < SpawnObstacleNumber; i++)
@@ -106,7 +147,7 @@ void AObstacleSpawner::Spawn()
 		// Obstacle 액터 위치 계산 및 보이게 하기
 		float Distance = 2 * SpawnVolume->Bounds.BoxExtent.X;
 		float ObstacleXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1/2 - Distance / LineNumMax * SpawnLineNumber[i];
-		UE_LOG(LogTemp, Warning, TEXT("Spawn Number : %d."), SpawnLineNumber[i]);
+		//UE_LOG(LogTemp, Warning, TEXT("Spawn Number : %d."), SpawnLineNumber[i]);
 
 		FVector ActorLocation = FVector(ObstacleXLoc, SpawnVolume->Bounds.BoxExtent.Y, 20.f);
 		
