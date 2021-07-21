@@ -10,6 +10,8 @@
 
 AGM_InGame::AGM_InGame()
 {
+	PlayScore = 0.f;
+
 	static ConstructorHelpers::FClassFinder<ACharacter>
 	PlayerCharacter(TEXT("/Game/Blueprints/BP_PlayerCharacter.BP_PlayerCharacter_C"));
 
@@ -32,7 +34,7 @@ void AGM_InGame::Save()
 		SaveGameInstance->SaveIndex = 0;
 
 		// TODO : 게임오버 조건 만들어지면 score 저장하기
-		SaveGameInstance->SaveScore = 100.f;
+		SaveGameInstance->SaveScore = PlayScore;
 	}
 	else
 	{

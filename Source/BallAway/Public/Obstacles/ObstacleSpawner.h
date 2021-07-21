@@ -7,6 +7,7 @@
 #include "ObstacleSpawner.generated.h"
 
 class UObjectPoolerComponent;
+class AGM_InGame;
 
 UENUM(BlueprintType)
 enum class EPhase : uint8
@@ -59,14 +60,9 @@ private :
 	int32 ObstacleMax;
 	int32 LineNumMax;
 
-	// 점수
-	float PlayScore;
-
 	// 페이즈 관련 변수
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Phase", meta = (AllowPrivateAccess = true))
 	EPhase CurrentPhase;
-
-
 
 
 };

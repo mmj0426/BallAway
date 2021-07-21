@@ -6,6 +6,7 @@
 #include "ObjectPoolerComponent.h"
 #include "Obstacle.h"
 #include "BAGameInstance.h"
+#include "GM_InGame.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
@@ -35,7 +36,6 @@ AObstacleSpawner::AObstacleSpawner()
 	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
 
 	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
-	PlayScore = 0.f;
 	CurrentPhase = EPhase::Phase1;
 }
 
@@ -115,13 +115,17 @@ void AObstacleSpawner::ChooseSpawnLine()
 void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto ObstacleActor = Cast<AObstacle>(OtherActor);
+
 	if (ObstacleActor != nullptr)
 	{
 		// 여러 개의 장애물 중 해당 태그가 달린 오브젝트와 만날 때에만 Score를 갱신
 		if (ObstacleActor->ActorHasTag("Score Calculate Obstacle"))
 		{
-			PlayScore += 0.25f;
-			UE_LOG(LogTemp, Warning, TEXT("Play Score : %f"), PlayScore);
+			auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
+
+			GameMode->PlayScore += 0.25f;
+
+			UE_LOG(LogTemp, Warning, TEXT("Play Score : %f"), GameMode->PlayScore);
 		}
 		ObstacleActor->Deactivate();
 	}

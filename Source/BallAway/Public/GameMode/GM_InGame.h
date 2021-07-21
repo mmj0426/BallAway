@@ -20,4 +20,6 @@ public :
 
 	void Save();
 	void Load();
+
+	float PlayScore;
 };
