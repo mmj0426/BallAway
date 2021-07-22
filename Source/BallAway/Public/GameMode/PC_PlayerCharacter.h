@@ -16,6 +16,7 @@ class BALLAWAY_API APC_PlayerCharacter : public APlayerController
 
 protected : 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
 	// Touch
@@ -24,16 +25,11 @@ protected :
 	void OnTouchEnd(ETouchIndex::Type TouchIndex, FVector TouchLocation);
 
 private : 
-	FVector FirstLocation;
-	FVector CurrentLocation;
-	FVector PrevLocation;
+	FVector2D FirstLocation;
+	FVector2D CurrentLocation;
 
-	FVector DesiredLocation;
-
-	FVector MoveDirection;
-
-	float DistanceToPlayer;
-	float DistanceFromTouch;
+	FVector2D MoveDirection;
+	FVector2D PlayerScreenLocation;
 
 	class APlayerCharacter* BAPlayer;
 };

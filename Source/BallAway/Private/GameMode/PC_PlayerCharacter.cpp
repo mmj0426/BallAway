@@ -14,7 +14,25 @@ void APC_PlayerCharacter::BeginPlay()
 	SetInputMode(InputMode);
 
 	BAPlayer = Cast<APlayerCharacter>(GetPawn());
-	
+
+}
+
+void APC_PlayerCharacter::Tick(float DeltaTime)
+{
+
+	//BALOG(Warning, TEXT("MoveDirextion.X : %f"), FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X));
+
+	//if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 50.f)
+	{
+		if (MoveDirection.X < 0.f)
+		{
+			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), -1.f);
+		}
+		else if (MoveDirection.X > 0.f)
+		{
+			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), 1.f);
+		}
+	}
 }
 
 void APC_PlayerCharacter::SetupInputComponent()
@@ -29,53 +47,26 @@ void APC_PlayerCharacter::SetupInputComponent()
 void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector TouchLocation)
 {
 	// 첫 터치 위치
-	FirstLocation = TouchLocation;
-
-	// 처음 터치.X ~ 현재 플레이어.X 까지의 거리
-	DistanceToPlayer = FMath::Abs(FirstLocation.X - BAPlayer->GetActorLocation().X);
+	FirstLocation = (FVector2D)TouchLocation;
 }
 
 void APC_PlayerCharacter::OnTouchTick(ETouchIndex::Type TouchIndex, FVector TouchLocation)
 {
 
 	// 현재 터치 위치
-	CurrentLocation = TouchLocation;
+	CurrentLocation = (FVector2D)TouchLocation;
+
+	// 플레이어의 위치 (월드좌표)를 스크린 좌표로 바꿈
+	ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
 
 	// 공이 움직여야할 방향 (좌, 우)
-	MoveDirection = (CurrentLocation - PrevLocation).GetSafeNormal();
+	MoveDirection = (CurrentLocation - PlayerScreenLocation).GetSafeNormal();
 
-	DistanceFromTouch = FMath::Abs(FirstLocation.X - CurrentLocation.X);
-
-	DesiredLocation = FVector(BAPlayer->GetActorLocation().X + DistanceFromTouch, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z);
-
-	if (FMath::Abs(DesiredLocation.X - BAPlayer->GetActorLocation().X) > 50.f)
-	{
-		if (MoveDirection.X < 0.f)
-		{
-			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), -1.f);
-		}
-		else if (MoveDirection.X > 0.f)
-		{
-			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), 1.f);
-		}
-	}
-	
-
-
-	PrevLocation = CurrentLocation;
-
-	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%f"), FMath::Abs(GetActorLocation().Y - DesiredLocation.Y)));
-	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("%f"), GetActorLocation().Y));
-
-
-	// GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%f"), Direction.X));
-
-	//AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), 1.f);
 }
 
 void APC_PlayerCharacter::OnTouchEnd(ETouchIndex::Type TouchIndex, FVector TouchLocation)
 {
-	FirstLocation = FVector::ZeroVector;
-	CurrentLocation = FVector::ZeroVector;
-	MoveDirection = FVector::ZeroVector;
+	FirstLocation = FVector2D::ZeroVector;
+	CurrentLocation = FVector2D::ZeroVector;
+	MoveDirection = FVector2D::ZeroVector;
 }
