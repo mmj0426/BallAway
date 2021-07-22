@@ -90,7 +90,6 @@ void AObstacleSpawner::ChooseSpawnLine()
 	// 1. 생성할 오브젝트의 개수를 정함
 	DecideObstacleSize();
 
-
 	// 2. 오브젝트를 생성할 라인을 정해 배열에 저장
 	for (int i = 0; i < SpawnObstacleNumber; i++)
 	{
@@ -124,6 +123,16 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
 
 			GameMode->PlayScore += 0.25f;
+
+			// 1점을 얻을 때마다 속력 감소
+			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
+			{
+				// TODO : 속력 감소
+				ObjectPooler->DescentSpeedReduction();
+
+				// 장애물의 속도가 느려지면 쿨타임도 같이 느려져야 함.
+				SpawnCooldown += ObjectPooler->GetSpeedReductionRate();
+			}
 
 			// 스코어 갱신 후 비교해서 페이즈 갱신
 			if (GameMode->PlayScore == 40.25)

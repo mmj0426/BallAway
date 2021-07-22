@@ -11,6 +11,8 @@
 class UObjectPoolerComponent;
 class AGM_InGame;
 
+DECLARE_MULTICAST_DELEGATE(FSpeedReductionDelegate);
+
 UCLASS()
 class BALLAWAY_API AObstacleSpawner : public AActor
 {

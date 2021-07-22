@@ -9,6 +9,7 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 
 	PoolSize = 50.f;
 	DescentSpeed = 2.f;
+	SpeedReductionRate = 0.02f;
 }
 
 void UObjectPoolerComponent::BeginPlay()
@@ -26,7 +27,6 @@ void UObjectPoolerComponent::BeginPlay()
 				PoolableObstacle->SetActive(false);
 				PoolableObstacle->SetDescentSpeed(DescentSpeed);
 				Pool.Add(PoolableObstacle);
-
 			}
 		}
 	}
@@ -45,4 +45,14 @@ AObstacle* UObjectPoolerComponent::GetPooledObject()
 	}
 
 	return nullptr;
+}
+
+void UObjectPoolerComponent::DescentSpeedReduction()
+{
+	for (AObstacle* PoolableObstacle : Pool)
+	{
+		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedReductionRate);
+		BALOG(Warning,TEXT("Speed : %f"), PoolableObstacle->GetDescentSpeed());
+	}
+
 }

@@ -24,6 +24,9 @@ public:
 	bool IsActive();
 
 	void SetDescentSpeed(float newSpeed);
+
+	FORCEINLINE float GetDescentSpeed() const { return DescentSpeed; }
+
 	void Deactivate();
 
 protected:

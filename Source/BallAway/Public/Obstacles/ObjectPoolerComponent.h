@@ -21,17 +21,25 @@ public:
 
 	AObstacle* GetPooledObject();
 
+	void DescentSpeedReduction();
+
+	FORCEINLINE float GetSpeedReductionRate() const {return SpeedReductionRate;}
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = ObjectPooler)
 	TSubclassOf<class AObstacle> PooledObjectSubClass;
 
-	UPROPERTY(EditAnywhere, Category = ObjectPooler)
+	UPROPERTY(EditAnywhere, Category = "ObjectPooler")
 	int PoolSize;
 
-	UPROPERTY(EditAnywhere, Category = ObjectPooler)
+	UPROPERTY(EditAnywhere, Category = "Obstacle Speed")
 	float DescentSpeed;
 
 	TArray<AObstacle*> Pool;
+
+	// 속력 감소율
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle Speed", meta = (AllowPrivateAccess = true))
+	float SpeedReductionRate;
 
 };
