@@ -3,19 +3,13 @@
 #pragma once
 
 #include "../BallAway.h"
+#include "PhaseEnum.h"
+
 #include "GameFramework/Actor.h"
 #include "ObstacleSpawner.generated.h"
 
 class UObjectPoolerComponent;
 class AGM_InGame;
-
-UENUM(BlueprintType)
-enum class EPhase : uint8
-{
-	Phase1 UMETA(DisplayName = "Obstacle Phase"),
-	Phase2 UMETA(DisplayName = "Obstacle Phase"),
-	Phase3 UMETA(DisplayName = "Obstacle Phase")
-};
 
 UCLASS()
 class BALLAWAY_API AObstacleSpawner : public AActor

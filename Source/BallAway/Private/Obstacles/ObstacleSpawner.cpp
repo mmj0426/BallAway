@@ -7,6 +7,7 @@
 #include "Obstacle.h"
 #include "BAGameInstance.h"
 #include "GM_InGame.h"
+//#include "PhaseEnum.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
@@ -87,7 +88,6 @@ void AObstacleSpawner::DecideObstacleSize()
 void AObstacleSpawner::ChooseSpawnLine()
 {
 	// 1. 생성할 오브젝트의 개수를 정함
-	//SpawnObstacleNumber = FMath::RandRange(ObstacleMin, ObstacleMax);
 	DecideObstacleSize();
 
 
@@ -124,6 +124,17 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
 
 			GameMode->PlayScore += 0.25f;
+
+			// 스코어 갱신 후 비교해서 페이즈 갱신
+			if (GameMode->PlayScore == 40.25)
+			{
+				CurrentPhase = EPhase::Phase2;
+			}
+			if (GameMode->PlayScore == 90.25)
+			{
+				CurrentPhase = EPhase::Phase3;
+			}
+
 
 			UE_LOG(LogTemp, Warning, TEXT("Play Score : %f"), GameMode->PlayScore);
 		}

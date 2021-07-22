@@ -4,7 +4,7 @@
 
 #include "../BallAway.h"
 
-#include "ObstacleSpawner.h"
+#include "PhaseEnum.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
 #include "BAGameInstance.generated.h"
