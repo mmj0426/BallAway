@@ -25,11 +25,14 @@ protected :
 	void OnTouchEnd(ETouchIndex::Type TouchIndex, FVector TouchLocation);
 
 private : 
-	FVector2D FirstLocation;
+
+	class APlayerCharacter* BAPlayer;
+
 	FVector2D CurrentLocation;
 
 	FVector2D MoveDirection;
 	FVector2D PlayerScreenLocation;
 
-	class APlayerCharacter* BAPlayer;
+	bool IsPlayerSpawned;
+
 };

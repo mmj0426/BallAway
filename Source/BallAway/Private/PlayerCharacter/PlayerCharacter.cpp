@@ -9,6 +9,13 @@ APlayerCharacter::APlayerCharacter()
 
 }
 
+void APlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetActorHiddenInGame(true);
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
