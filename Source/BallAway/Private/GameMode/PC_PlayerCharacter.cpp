@@ -3,9 +3,6 @@
 
 #include "GameMode/PC_PlayerCharacter.h"
 #include "PlayerCharacter/PlayerCharacter.h"
-#include "SceneView.h"
-#include "Math/Vector4.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -18,7 +15,7 @@ void APC_PlayerCharacter::BeginPlay()
 
 	BAPlayer = Cast<APlayerCharacter>(GetPawn());
 
-	IsPlayerSpawned = true;
+	IsPlayerSpawned = false;
 
 }
 
@@ -30,7 +27,7 @@ void APC_PlayerCharacter::Tick(float DeltaTime)
 	//BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.X, PlayerScreenLocation.X);
 	//BALOG(Error, TEXT("MoveDirection.X : %f"), FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X));
 
-	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 10.f)
+	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 10.f && IsPlayerSpawned)
 	{
 		if (MoveDirection.X < 0.f)
 		{
@@ -57,21 +54,16 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 {
 	if (!IsPlayerSpawned)
 	{
-		////FVector ScreenSpawnLocation = FVector(TouchLocation.X, );
-		//FVector WorldLocation;
+		FHitResult Hit;
+		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
-		//BAPlayer->PlayerSpawn(ScreenSpawnLocation);
-		//IsPlayerSpawned = true;
+		if (Hit.bBlockingHit)
+		{
+			BAPlayer->SetActorLocation(FVector(Hit.ImpactPoint.X, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z));
+			BAPlayer->SetActorHiddenInGame(false);
 
-		//if (DeprojectMousePositionToWorld(TouchLocation, WorldLocation))
-		//{
-		//	BAPlayer->SetActorLocation(TouchLocation);
-		//	BAPlayer->SetActorHiddenInGame(false);
-
-		//	IsPlayerSpawned = true;
-		//}
-
-		//BALOG(Warning, TEXT("WorldLocation : %f"), ScreenSpawnLocation.X);
+			IsPlayerSpawned = true;
+		}
 
 	}
 	else
