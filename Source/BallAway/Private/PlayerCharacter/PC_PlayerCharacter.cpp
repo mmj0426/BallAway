@@ -54,16 +54,8 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 {
 	if (!IsPlayerSpawned)
 	{
-		FVector2D ViewportSize;
-		GEngine->GameViewport->GetViewportSize(ViewportSize);
-		const FVector2D ViewportQuarter = FVector2D(ViewportSize.X * 0.75, ViewportSize.Y * 0.75);
-
 		FHitResult Hit;
-
-		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,FString::Printf(TEXT("ViewportQuarter.Y : %f"), ViewportQuarter.Y));
-		// Y값은 고정
-		FVector2D ScreenLocation = FVector2D(TouchLocation.X, ViewportQuarter.Y);
-
+		FVector2D ScreenLocation = FVector2D(TouchLocation.X, PlayerScreenLocation.Y);
 		GetHitResultAtScreenPosition(ScreenLocation, ECC_Visibility, false, Hit);
 
 		if (Hit.bBlockingHit)
