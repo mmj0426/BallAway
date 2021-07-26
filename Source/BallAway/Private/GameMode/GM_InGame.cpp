@@ -2,7 +2,7 @@
 
 
 #include "GameMode/GM_InGame.h"
-#include "GameMode/PC_PlayerCharacter.h"
+#include "PlayerCharacter/PC_PlayerCharacter.h"
 #include "PlayerCharacter/PlayerCharacter.h"
 
 #include "BallAway/Public/GameMode/BASaveGame.h"

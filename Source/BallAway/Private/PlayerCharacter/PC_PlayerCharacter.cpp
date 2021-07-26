@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameMode/PC_PlayerCharacter.h"
+#include "PlayerCharacter/PC_PlayerCharacter.h"
 #include "PlayerCharacter/PlayerCharacter.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -24,7 +24,7 @@ void APC_PlayerCharacter::Tick(float DeltaTime)
 	// 플레이어의 위치 (월드좌표)를 스크린 좌표로 바꿈
 	ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
 
-	//BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.X, PlayerScreenLocation.X);
+	//BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.Y, PlayerScreenLocation.X);
 	//BALOG(Error, TEXT("MoveDirection.X : %f"), FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X));
 
 	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 10.f && IsPlayerSpawned)
@@ -55,7 +55,31 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 	if (!IsPlayerSpawned)
 	{
 		FHitResult Hit;
-		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+		//GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+
+		//if (Hit.bBlockingHit)
+		//{
+		//	BAPlayer->SetActorLocation(FVector(Hit.ImpactPoint.X, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z));
+		//	BAPlayer->SetActorHiddenInGame(false);
+
+		//	IsPlayerSpawned = true;
+		//}
+
+		//FVector WorldLocation;
+		//FVector WorldDirection;
+
+		////365.f
+		//if (DeprojectScreenPositionToWorld(TouchLocation.X, TouchLocation.Y, WorldLocation, WorldDirection))
+		//{
+		//	BALOG(Warning, TEXT("WorldLocation : %f"), WorldLocation.X);
+		//	BAPlayer->SetActorLocation(FVector(WorldLocation.X, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z));
+		//	BAPlayer->SetActorHiddenInGame(false);
+
+		//	IsPlayerSpawned = true;
+		//}
+
+		FVector2D ScreenLocation = FVector2D(TouchLocation.X, 365.f);
+		GetHitResultAtScreenPosition(ScreenLocation, ECC_Visibility, false, Hit);
 
 		if (Hit.bBlockingHit)
 		{
