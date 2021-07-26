@@ -24,8 +24,7 @@ public class BallAway : ModuleRules
             Path.Combine(ModuleDirectory, "Public/GameMode"),
 			Path.Combine(ModuleDirectory, "Public/Obstacles"),
 			Path.Combine(ModuleDirectory, "Public/PlayerCharacter"),
-			Path.Combine(ModuleDirectory, "Public/Item"),
-			Path.Combine(ModuleDirectory, "Public/BlueprintFunc")
+			Path.Combine(ModuleDirectory, "Public/Item")
 
 		});
 

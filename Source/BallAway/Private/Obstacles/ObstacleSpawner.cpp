@@ -127,6 +127,7 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			// 1점을 얻을 때마다 속력 감소
 			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
 			{
+				// TODO : 속력 감소
 				ObjectPooler->DescentSpeedReduction();
 
 				// 장애물의 속도가 느려지면 쿨타임도 같이 느려져야 함.

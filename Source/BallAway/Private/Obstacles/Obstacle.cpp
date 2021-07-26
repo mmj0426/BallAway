@@ -12,7 +12,7 @@ AObstacle::AObstacle()
 
 	//Velocity = 100.f;
 
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObstacleVisual"));
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 	CubeMesh(TEXT("/Game/BasicAsset/Shape_Cube.Shape_Cube"));
 	if (CubeMesh.Succeeded())
