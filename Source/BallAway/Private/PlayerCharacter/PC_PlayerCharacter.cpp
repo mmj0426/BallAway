@@ -54,31 +54,16 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 {
 	if (!IsPlayerSpawned)
 	{
+		FVector2D ViewportSize;
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+		const FVector2D ViewportQuarter = FVector2D(ViewportSize.X * 0.75, ViewportSize.Y * 0.75);
+
 		FHitResult Hit;
-		//GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
-		//if (Hit.bBlockingHit)
-		//{
-		//	BAPlayer->SetActorLocation(FVector(Hit.ImpactPoint.X, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z));
-		//	BAPlayer->SetActorHiddenInGame(false);
+		GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Green,FString::Printf(TEXT("ViewportQuarter.Y : %f"), ViewportQuarter.Y));
+		// Y값은 고정
+		FVector2D ScreenLocation = FVector2D(TouchLocation.X, ViewportQuarter.Y);
 
-		//	IsPlayerSpawned = true;
-		//}
-
-		//FVector WorldLocation;
-		//FVector WorldDirection;
-
-		////365.f
-		//if (DeprojectScreenPositionToWorld(TouchLocation.X, TouchLocation.Y, WorldLocation, WorldDirection))
-		//{
-		//	BALOG(Warning, TEXT("WorldLocation : %f"), WorldLocation.X);
-		//	BAPlayer->SetActorLocation(FVector(WorldLocation.X, BAPlayer->GetActorLocation().Y, BAPlayer->GetActorLocation().Z));
-		//	BAPlayer->SetActorHiddenInGame(false);
-
-		//	IsPlayerSpawned = true;
-		//}
-
-		FVector2D ScreenLocation = FVector2D(TouchLocation.X, 365.f);
 		GetHitResultAtScreenPosition(ScreenLocation, ECC_Visibility, false, Hit);
 
 		if (Hit.bBlockingHit)
