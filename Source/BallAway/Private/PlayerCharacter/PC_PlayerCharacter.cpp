@@ -24,11 +24,11 @@ void APC_PlayerCharacter::Tick(float DeltaTime)
 	// 플레이어의 위치 (월드좌표)를 스크린 좌표로 바꿈
 	ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
 
-	//BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.Y, PlayerScreenLocation.X);
 	//BALOG(Error, TEXT("MoveDirection.X : %f"), FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X));
 
 	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 10.f && IsPlayerSpawned)
 	{
+		BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.X, PlayerScreenLocation.X);
 		if (MoveDirection.X < 0.f)
 		{
 			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), -1.f);
@@ -52,10 +52,16 @@ void APC_PlayerCharacter::SetupInputComponent()
 
 void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector TouchLocation)
 {
+	// 첫 터치 위치
+	CurrentLocation = (FVector2D)TouchLocation;
+
+	MoveDirection = (CurrentLocation - PlayerScreenLocation).GetSafeNormal();
+	ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
+
 	if (!IsPlayerSpawned)
 	{
 		FHitResult Hit;
-		FVector2D ScreenLocation = FVector2D(TouchLocation.X, PlayerScreenLocation.Y);
+		FVector2D ScreenLocation = FVector2D(CurrentLocation.X, PlayerScreenLocation.Y);
 		GetHitResultAtScreenPosition(ScreenLocation, ECC_Visibility, false, Hit);
 
 		if (Hit.bBlockingHit)
@@ -66,13 +72,6 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 			IsPlayerSpawned = true;
 		}
 
-	}
-	else
-	{
-		// 첫 터치 위치
-		CurrentLocation = (FVector2D)TouchLocation;
-
-		ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
 	}
 
 }

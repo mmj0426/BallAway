@@ -20,7 +20,16 @@ void UBAGameInstance::Init()
 	//BALOG(Warning,TEXT("Prob Size 2 Phase 1 : %d"),GetObstacleSizeProb(2)->GetPhase(EPhase::Phase1));
 }
 
-FObstacleSizeProb* UBAGameInstance::GetObstacleSizeProb(int32 Size)
+int32 UBAGameInstance::GetObstacleSizeProb(int32 Size, EPhase CurrentPhase)
 {
-	return ObstacleSizeProbTable->FindRow<FObstacleSizeProb>(*FString::FromInt(Size),TEXT(""));
+	int32 Cumulate = 0;
+
+	for (int i = Size; i > 1; i--)
+	{
+		Cumulate += ObstacleSizeProbTable->FindRow<FObstacleSizeProb>(*FString::FromInt(i), TEXT(""))->GetPhase(CurrentPhase);
+	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Cumulate :  %d"), Cumulate));
+
+	return Cumulate;
 }

@@ -55,27 +55,27 @@ void AObstacleSpawner::DecideObstacleSize()
 	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
 
 	// 페이즈에 따른 장애물 크기 확률 적용
-	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase))
+	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetObstacleSizeProb(2,CurrentPhase))
 	{
 		SpawnObstacleNumber = 2;
 	}
-	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase)
-		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase)))
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(2, CurrentPhase)
+		&& RandomNum < BAGameInstance->GetObstacleSizeProb(3, CurrentPhase))
 	{
 		SpawnObstacleNumber = 3;
 	}
-	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase)
-		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase)))
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(3, CurrentPhase)
+		&& RandomNum < BAGameInstance->GetObstacleSizeProb(4, CurrentPhase))
 	{
 		SpawnObstacleNumber = 4;
 	}
-	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase)
-		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(5)->GetPhase(CurrentPhase)))
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(4, CurrentPhase)
+		&& RandomNum < BAGameInstance->GetObstacleSizeProb(5, CurrentPhase))
 	{
 		SpawnObstacleNumber = 5;
 	}
-	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(5)->GetPhase(CurrentPhase)
-		&& RandomNum < (BAGameInstance->GetObstacleSizeProb(2)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(3)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(4)->GetPhase(CurrentPhase) + BAGameInstance->GetObstacleSizeProb(5)->GetPhase(CurrentPhase)+ BAGameInstance->GetObstacleSizeProb(6)->GetPhase(CurrentPhase)))
+	else if (RandomNum >= BAGameInstance->GetObstacleSizeProb(5, CurrentPhase)
+		&& RandomNum < BAGameInstance->GetObstacleSizeProb(6, CurrentPhase))
 	{
 		SpawnObstacleNumber = 6;
 	}

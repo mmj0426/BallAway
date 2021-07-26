@@ -9,6 +9,25 @@
 #include "Engine/GameInstance.h"
 #include "BAGameInstance.generated.h"
 
+
+UCLASS()
+class BALLAWAY_API UBAGameInstance : public UGameInstance
+{
+	GENERATED_BODY()
+
+public:
+	UBAGameInstance();
+	virtual void Init() override;
+
+	int32 GetObstacleSizeProb(int32 Size, EPhase CurrentPhase);
+
+
+private:
+	UPROPERTY()
+		class UDataTable* ObstacleSizeProbTable;
+};
+
+
 USTRUCT(BlueprintType)
 struct FObstacleSizeProb : public FTableRowBase
 {
@@ -44,21 +63,4 @@ public :
 		}
 		return 0;
 	}
-};
-
-UCLASS()
-class BALLAWAY_API UBAGameInstance : public UGameInstance
-{
-	GENERATED_BODY()
-	
-public : 
-	UBAGameInstance();
-	virtual void Init() override;
-
-	FObstacleSizeProb* GetObstacleSizeProb(int32 Size);
-
-	
-private :
-	UPROPERTY()
-	class UDataTable* ObstacleSizeProbTable;
 };
