@@ -24,7 +24,7 @@ public:
 
 private:
 	UPROPERTY()
-		class UDataTable* ObstacleSizeProbTable;
+	class UDataTable* ObstacleSizeProbTable;
 };
 
 

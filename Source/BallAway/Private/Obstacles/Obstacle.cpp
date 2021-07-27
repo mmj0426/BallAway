@@ -10,9 +10,7 @@ AObstacle::AObstacle()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Velocity = 100.f;
-
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObstacleMesh"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 	CubeMesh(TEXT("/Game/BasicAsset/Shape_Cube.Shape_Cube"));
 	if (CubeMesh.Succeeded())
@@ -24,6 +22,8 @@ AObstacle::AObstacle()
 	}
 
 	RootComponent = StaticMesh;
+	
+	StaticMesh->SetCollisionProfileName(FName("OverlapOnlyPawn"));
 	SetActorEnableCollision(true);
 
 }
@@ -42,10 +42,8 @@ void AObstacle::Tick(float DeltaTime)
 	if (Active)
 	{
 		FVector MoveVector = FVector(GetActorLocation().X , GetActorLocation().Y - DescentSpeed, GetActorLocation().Z);
-		//FLatentActionInfo LatentInfo;
 
 		SetActorLocation(MoveVector);
-		//UKismetSystemLibrary::MoveComponentTo(RootComponent, MoveVector, GetActorRotation(), false, false, 2.f, EMoveComponentAction::Type::Move, LatentInfo);
 	}
 
 }

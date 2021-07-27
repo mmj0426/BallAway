@@ -24,11 +24,11 @@ void APC_PlayerCharacter::Tick(float DeltaTime)
 	// 플레이어의 위치 (월드좌표)를 스크린 좌표로 바꿈
 	ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
 
+	//BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.X, PlayerScreenLocation.X);
 	//BALOG(Error, TEXT("MoveDirection.X : %f"), FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X));
 
 	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 10.f && IsPlayerSpawned)
 	{
-		BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.X, PlayerScreenLocation.X);
 		if (MoveDirection.X < 0.f)
 		{
 			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), -1.f);

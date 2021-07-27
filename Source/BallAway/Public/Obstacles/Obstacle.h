@@ -18,8 +18,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	FORCEINLINE class UStaticMeshComponent* GetMesh() const { return StaticMesh; }
-
 	void SetActive(bool newActive);
 	bool IsActive();
 
@@ -29,11 +27,11 @@ public:
 
 	void Deactivate();
 
-protected:
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UStaticMeshComponent* StaticMesh;
 
 	float DescentSpeed;
+
 	bool Active;
 
 

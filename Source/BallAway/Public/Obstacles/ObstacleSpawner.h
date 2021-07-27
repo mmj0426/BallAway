@@ -11,6 +11,7 @@
 class UObjectPoolerComponent;
 class AGM_InGame;
 
+
 DECLARE_MULTICAST_DELEGATE(FSpeedReductionDelegate);
 
 UCLASS()
@@ -38,16 +39,23 @@ private:
 	UObjectPoolerComponent* ObjectPooler;
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
-	float SpawnCooldown;
+	float ObstacleSpawnCooldown;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	float ItemSpawnCooldown;
 
 	void DecideObstacleSize();
 	void ChooseSpawnLine();
 	void Spawn();
 
+	// 아이템 생성 여부 검사
+	void SetCanItemSpawn();
+
 private : 
 
 	// 장애물 스폰 관련 변수
-	FTimerHandle SpawnCooldownTimer;
+	FTimerHandle ObstacleSpawnCooldownTimer;
+	
 
 	TArray<int32> SpawnLineNumber;
 
@@ -60,5 +68,10 @@ private :
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Phase", meta = (AllowPrivateAccess = true))
 	EPhase CurrentPhase;
 
+	// 아이템 관련 변수
+	FTimerHandle ItemSpawnCooldownTimer;
+
+	bool CanItemSpawn;
+	int32 ItemSpawnLine;
 
 };
