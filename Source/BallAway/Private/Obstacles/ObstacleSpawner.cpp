@@ -61,7 +61,7 @@ void AObstacleSpawner::DecideObstacleSize()
 	auto BAGameInstance = Cast<UBAGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	int32 RandomNum = FMath::RandRange(0,99);
-	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
+	//UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
 
 	// 페이즈에 따른 장애물 크기 확률 적용
 	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetObstacleSizeProb(2,CurrentPhase))
@@ -89,7 +89,7 @@ void AObstacleSpawner::DecideObstacleSize()
 		SpawnObstacleNumber = 6;
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("Obstacle Number : %d."), SpawnObstacleNumber);
+	//UE_LOG(LogTemp, Warning, TEXT("Obstacle Number : %d."), SpawnObstacleNumber);
 	return;
 
 }
@@ -179,8 +179,20 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 void AObstacleSpawner::SetCanItemSpawn()
 {
-	// TODO : Item 확률 데이터 가져와서 계산 후 CanItemSpawn 값 조정
-	CanItemSpawn = true;
+	auto BAGameInstance = Cast<UBAGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	int32 RandomNum = FMath::RandRange(0, 99);
+	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
+
+	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetItemSpawnProb(FName(TEXT("SpeedUp")), CurrentPhase))
+	{
+		CanItemSpawn = true;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), CanItemSpawn);
+
+	return;
+
 }
 
 
