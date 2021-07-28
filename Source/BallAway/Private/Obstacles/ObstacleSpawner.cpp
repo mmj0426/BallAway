@@ -19,8 +19,6 @@ AObstacleSpawner::AObstacleSpawner()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	ObstacleSpawnCooldown = 2.f;
-
 	LineNumMax = 7;
 
 	// 장애물의 개수는 2 ~ 6
@@ -52,7 +50,7 @@ void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObstacleSpawnCooldown, false);
+	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 	GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this,&AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
 }
 
@@ -153,11 +151,10 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			// 1점을 얻을 때마다 속력 감소
 			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
 			{
-				// TODO : 속력 감소
-				ObjectPooler->DescentSpeedReduction();
+				ObjectPooler->DescentSpeedDecrease();
 
 				// 장애물의 속도가 느려지면 쿨타임도 같이 느려져야 함.
-				ObstacleSpawnCooldown += ObjectPooler->GetSpeedReductionRate();
+				//ObjectPooler->ObstacleSpawnCooldown += ObjectPooler->GetSpeedReductionRate();
 			}
 
 			// 스코어 갱신 후 비교해서 페이즈 갱신
@@ -208,8 +205,8 @@ void AObstacleSpawner::Spawn()
 		// Obstacle 클래스가 null 이면 오류 띄우고 return
 		if (nullptr == ObstacleActor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained. Retrying in %f seconds."), ObstacleSpawnCooldown);
-			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObstacleSpawnCooldown, false);
+			UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained. Retrying in %f seconds."), ObjectPooler->ObstacleSpawnCooldown);
+			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 			return;
 		}
 		
@@ -241,8 +238,8 @@ void AObstacleSpawner::Spawn()
 		ASpeedUpItem* SpeedUpItemActor = ObjectPooler->GetPooledItem();
 		if (nullptr == SpeedUpItemActor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained. Retrying in %f seconds."), ObstacleSpawnCooldown);
-			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObstacleSpawnCooldown, false);
+			UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained. Retrying in %f seconds."), ObjectPooler->ObstacleSpawnCooldown);
+			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 			return;
 		}
 
@@ -252,7 +249,7 @@ void AObstacleSpawner::Spawn()
 	}
 
 
-	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObstacleSpawnCooldown, false);
+	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 }
 
 

@@ -11,8 +11,11 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 	PoolSize = 50.f;
 	ItemPoolSize = 5.f;
 
+	ObstacleSpawnCooldown = 2.f;
+
 	DescentSpeed = 2.f;
-	SpeedReductionRate = 0.02f;
+	SpeedDecreaseRate = 0.02f;
+	SpeedIncreaseRate = 0.1f;
 }
 
 void UObjectPoolerComponent::BeginPlay()
@@ -44,6 +47,7 @@ void UObjectPoolerComponent::BeginPlay()
 				ASpeedUpItem* SpeedUpItem = World->SpawnActor<ASpeedUpItem>(ItemSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				SpeedUpItem->SetActive(false);
 				SpeedUpItem->SetDescentSpeed(DescentSpeed);
+				SpeedUpItem->OnGetItem.AddUObject(this, &UObjectPoolerComponent::DescentSpeedIncrease);
 				Items.Add(SpeedUpItem);
 			}
 		}
@@ -77,17 +81,34 @@ ASpeedUpItem* UObjectPoolerComponent::GetPooledItem()
 	return nullptr;
 }
 
-void UObjectPoolerComponent::DescentSpeedReduction()
+void UObjectPoolerComponent::DescentSpeedDecrease()
 {
+	ObstacleSpawnCooldown += SpeedIncreaseRate;
+
 	for (AObstacle* PoolableObstacle : Pool)
 	{
-		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedReductionRate);
-
-		BALOG(Warning,TEXT("Speed : %f"), PoolableObstacle->GetDescentSpeed());
+		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
+		BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
 	}
 
 	for (ASpeedUpItem* PoolableItem : Items)
 	{
-		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() - DescentSpeed * SpeedReductionRate);
+		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
+	}
+}
+
+void UObjectPoolerComponent::DescentSpeedIncrease()
+{
+	ObstacleSpawnCooldown -= SpeedIncreaseRate;
+
+	for (AObstacle* PoolableObstacle : Pool)
+	{
+		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() + DescentSpeed * SpeedIncreaseRate);
+		BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
+	}
+
+	for (ASpeedUpItem* PoolableItem : Items)
+	{
+		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() + DescentSpeed * SpeedIncreaseRate);
 	}
 }

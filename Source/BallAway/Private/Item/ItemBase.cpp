@@ -2,6 +2,7 @@
 
 
 #include "Item/ItemBase.h"
+#include "PlayerCharacter/PlayerCharacter.h"
 
 AItemBase::AItemBase()
 {

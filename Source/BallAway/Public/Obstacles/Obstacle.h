@@ -18,22 +18,23 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	void SetActive(bool newActive);
+	// 활성화
+	bool Active;
 	bool IsActive();
-
-	void SetDescentSpeed(float newSpeed);
-
-	FORCEINLINE float GetDescentSpeed() const { return DescentSpeed; }
-
+	void SetActive(bool newActive);
 	void Deactivate();
 
+	// 하강 속도
+	float DescentSpeed;
+	void SetDescentSpeed(float newSpeed);
+
+	// Mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UStaticMeshComponent* StaticMesh;
 
-	float DescentSpeed;
+	FORCEINLINE float GetDescentSpeed() const { return DescentSpeed; }
 
-	bool Active;
-
-
-
+	// Collision
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	class UBoxComponent* BoxCollision;
 };

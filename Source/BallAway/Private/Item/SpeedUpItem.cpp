@@ -1,5 +1,7 @@
 
 #include "Item/SpeedUpItem.h"
+#include "PlayerCharacter/PlayerCharacter.h"
+#include "Components/BoxComponent.h"
 
 ASpeedUpItem::ASpeedUpItem()
 {
@@ -19,10 +21,24 @@ ASpeedUpItem::ASpeedUpItem()
 void ASpeedUpItem::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ASpeedUpItem::OnOverlapBegin);
 }
 
 void ASpeedUpItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASpeedUpItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//BALOG(Warning, TEXT("OnOverlapBegin"));
+	auto PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+
+	if(nullptr != PlayerCharacter)
+	{
+		Deactivate();
+		OnGetItem.Broadcast();
+	}
 }

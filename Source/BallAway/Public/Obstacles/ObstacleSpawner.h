@@ -39,9 +39,6 @@ private:
 	UObjectPoolerComponent* ObjectPooler;
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
-	float ObstacleSpawnCooldown;
-
-	UPROPERTY(EditAnywhere, Category = Spawner)
 	float ItemSpawnCooldown;
 
 	void DecideObstacleSize();

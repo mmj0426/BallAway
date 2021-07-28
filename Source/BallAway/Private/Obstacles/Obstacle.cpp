@@ -3,6 +3,7 @@
 
 #include "Obstacles/Obstacle.h"
 
+#include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -10,6 +11,7 @@ AObstacle::AObstacle()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Set Static Mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObstacleMesh"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 	CubeMesh(TEXT("/Game/BasicAsset/Shape_Cube.Shape_Cube"));
@@ -23,8 +25,15 @@ AObstacle::AObstacle()
 
 	RootComponent = StaticMesh;
 	
-	StaticMesh->SetCollisionProfileName(FName("OverlapOnlyPawn"));
+	StaticMesh->SetCollisionProfileName(FName("NoCollision"));
 	SetActorEnableCollision(true);
+
+	// Set Box Collision
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	BoxCollision->SetupAttachment(StaticMesh);
+	BoxCollision->SetRelativeLocation(FVector(0.f,0.f,50.f));
+	BoxCollision->SetWorldScale3D(FVector(1.8f));
+	BoxCollision->SetCollisionProfileName(FName("OverlapOnlyPawn"));
 
 }
 
@@ -45,6 +54,7 @@ void AObstacle::Tick(float DeltaTime)
 
 		SetActorLocation(MoveVector);
 	}
+
 
 }
 

@@ -23,9 +23,17 @@ public:
 	AObstacle* GetPooledObstacle();
 	ASpeedUpItem* GetPooledItem();
 
-	void DescentSpeedReduction();
+	UFUNCTION()
+	void DescentSpeedDecrease();
 
-	FORCEINLINE float GetSpeedReductionRate() const {return SpeedReductionRate;}
+	UFUNCTION()
+	void DescentSpeedIncrease();
+
+	FORCEINLINE float GetSpeedReductionRate() const {return SpeedDecreaseRate;}
+
+	// 스폰 쿨타임
+	UPROPERTY(EditAnywhere,Category = "Obstacle Speed")
+	float ObstacleSpawnCooldown;
 
 private:
 
@@ -44,12 +52,16 @@ private:
 	// 하강 속도
 	UPROPERTY(EditAnywhere, Category = "Obstacle Speed")
 	float DescentSpeed;
-
+		
 	TArray<AObstacle*> Pool;
 	TArray<ASpeedUpItem*>Items;
 
 	// 속력 감소율
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle Speed", meta = (AllowPrivateAccess = true))
-	float SpeedReductionRate;
+	float SpeedDecreaseRate;
+
+	// 속력 증가율
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle Speed", meta = (AllowPrivateAccess = true))
+	float SpeedIncreaseRate;
 
 };
