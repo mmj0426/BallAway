@@ -9,7 +9,7 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	PoolSize = 50.f;
-	ItemPoolSize = 10.f;
+	ItemPoolSize = 5.f;
 
 	DescentSpeed = 2.f;
 	SpeedReductionRate = 0.02f;
@@ -90,5 +90,4 @@ void UObjectPoolerComponent::DescentSpeedReduction()
 	{
 		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() - DescentSpeed * SpeedReductionRate);
 	}
-
 }

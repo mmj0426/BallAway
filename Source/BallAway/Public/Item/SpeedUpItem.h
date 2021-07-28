@@ -2,11 +2,11 @@
 #pragma once
 
 #include "../BallAway.h"
-#include "Obstacles/Obstacle.h"
+#include "Item/ItemBase.h"
 #include "SpeedUpItem.generated.h"
 
 UCLASS()
-class BALLAWAY_API ASpeedUpItem : public AObstacle
+class BALLAWAY_API ASpeedUpItem : public AItemBase
 {
 	GENERATED_BODY()
 	

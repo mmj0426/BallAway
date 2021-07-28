@@ -41,6 +41,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ObjectPooler")
 	int ItemPoolSize;
 
+	// 하강 속도
 	UPROPERTY(EditAnywhere, Category = "Obstacle Speed")
 	float DescentSpeed;
 

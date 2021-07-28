@@ -14,12 +14,6 @@ ASpeedUpItem::ASpeedUpItem()
 		StaticMesh->SetWorldScale3D(FVector(1.8f));
 		StaticMesh->SetSimulatePhysics(false);
 	}
-
-	StaticMesh->SetCollisionProfileName(FName("OverlapOnlyPawn"));
-	SetActorEnableCollision(true);
-
-	Active = false;
-
 }
 
 void ASpeedUpItem::BeginPlay()
