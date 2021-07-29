@@ -24,5 +24,5 @@ public :
 	int32 SaveIndex;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SaveData")
-	float SaveScore;
+	float FirstScore;
 };

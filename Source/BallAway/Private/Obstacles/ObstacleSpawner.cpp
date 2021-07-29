@@ -148,6 +148,8 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 			GameMode->PlayScore += 0.25f;
 
+			// TODO : HUD가져와서 Score변수 갱신
+
 			// 1점을 얻을 때마다 속력 감소
 			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
 			{

@@ -53,7 +53,6 @@ private :
 	// 장애물 스폰 관련 변수
 	FTimerHandle ObstacleSpawnCooldownTimer;
 	
-
 	TArray<int32> SpawnLineNumber;
 
 	int32 SpawnObstacleNumber;
