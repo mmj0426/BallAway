@@ -19,7 +19,6 @@ AGM_InGame::AGM_InGame()
 
 	PlayerControllerClass = APC_PlayerCharacter::StaticClass();
 
-	Save();
 	Load();
 }
 

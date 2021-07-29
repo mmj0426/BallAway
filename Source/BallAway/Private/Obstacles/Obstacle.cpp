@@ -2,6 +2,7 @@
 
 
 #include "Obstacles/Obstacle.h"
+#include "GM_InGame.h"
 
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -72,6 +73,13 @@ bool AObstacle::IsActive()
 
 void AObstacle::SetDescentSpeed(float newSpeed)
 {
+	if (newSpeed <= 0.f)
+	{
+		auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
+		
+		GameMode->Save();
+	}
+
 	DescentSpeed = newSpeed;
 }
 

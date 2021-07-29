@@ -82,7 +82,7 @@ ASpeedUpItem* UObjectPoolerComponent::GetPooledItem()
 }
 
 void UObjectPoolerComponent::DescentSpeedDecrease()
-{
+{	
 	ObstacleSpawnCooldown += SpeedIncreaseRate;
 
 	for (AObstacle* PoolableObstacle : Pool)
