@@ -2,17 +2,22 @@
 
 
 #include "Obstacles/Obstacle.h"
+#include "GM_InGame.h"
 
+#include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "UI/BAHUD.h"
+#include "UI/ScoreWidget.h"
 
 // Sets default values
 AObstacle::AObstacle()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Velocity = 100.f;
-
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Visual"));
+	// Set Static Mesh
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObstacleMesh"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 	CubeMesh(TEXT("/Game/BasicAsset/Shape_Cube.Shape_Cube"));
 	if (CubeMesh.Succeeded())
@@ -24,7 +29,17 @@ AObstacle::AObstacle()
 	}
 
 	RootComponent = StaticMesh;
+	
+	StaticMesh->SetCollisionProfileName(FName("NoCollision"));
 	SetActorEnableCollision(true);
+
+	// Set Box Collision
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	BoxCollision->SetupAttachment(StaticMesh);
+	BoxCollision->SetRelativeLocation(FVector(0.f,0.f,50.f));
+	BoxCollision->SetRelativeRotation(FRotator(0.f,0.f,180.f));
+	BoxCollision->SetWorldScale3D(FVector(1.8f));
+	BoxCollision->SetCollisionProfileName(FName("OverlapOnlyPawn"));
 
 }
 
@@ -42,20 +57,12 @@ void AObstacle::Tick(float DeltaTime)
 	if (Active)
 	{
 		FVector MoveVector = FVector(GetActorLocation().X , GetActorLocation().Y - DescentSpeed, GetActorLocation().Z);
-		//FLatentActionInfo LatentInfo;
 
 		SetActorLocation(MoveVector);
-		//UKismetSystemLibrary::MoveComponentTo(RootComponent, MoveVector, GetActorRotation(), false, false, 2.f, EMoveComponentAction::Type::Move, LatentInfo);
 	}
 
-}
 
-//void AObstacle::SetLifeSpan(float newLifeSpan)
-//{
-//	Lifespan = newLifeSpan;
-//	//UE_LOG(LogTemp, Warning, TEXT("Lifespan : %s"), Lifespan);
-//	GetWorldTimerManager().SetTimer(LifespanTimer, this, &AObstacle::Deactivate, Lifespan, false);
-//}
+}
 
 void AObstacle::SetActive(bool newActive)
 {
@@ -69,18 +76,28 @@ bool AObstacle::IsActive()
 	return Active;
 }
 
-//void AObstacle::SetVelocity(float newVelocity)
-//{
-//	Velocity = newVelocity;
-//}
-
-//void AObstacle::SetDirection(FVector newDirection)
-//{
-//	Direction = newDirection;
-//}
-
 void AObstacle::SetDescentSpeed(float newSpeed)
 {
+	if (newSpeed <= 0.f)
+	{
+		auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
+		
+		GameMode->Save();
+
+		auto Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		//UGameplayStatics::OpenLevel(GetWorld(),TEXT("Cute_Zoo_3_Map"));
+		auto HUD = Cast<ABAHUD>(Controller->GetHUD());
+		auto ResultWidget = (Cast<ABAHUD>(Controller->GetHUD()))->GetGameResultWidget();
+		FInputModeUIOnly UIOnly;
+
+		ResultWidget->SetPlayScoreText(GameMode->PlayScore);
+		ResultWidget->GetBestScoreText();
+
+		ResultWidget->AddToViewport();
+		Controller->SetInputMode(UIOnly);
+
+	}
+
 	DescentSpeed = newSpeed;
 }
 
@@ -88,5 +105,6 @@ void AObstacle::Deactivate()
 {
 	SetActive(false);
 	SetActorEnableCollision(false);
+	Tags.Remove("Score Calculate Obstacle");
 }
 

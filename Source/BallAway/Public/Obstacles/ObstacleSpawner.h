@@ -3,10 +3,16 @@
 #pragma once
 
 #include "../BallAway.h"
+#include "PhaseEnum.h"
+
 #include "GameFramework/Actor.h"
 #include "ObstacleSpawner.generated.h"
 
 class UObjectPoolerComponent;
+class AGM_InGame;
+
+
+DECLARE_MULTICAST_DELEGATE(FSpeedReductionDelegate);
 
 UCLASS()
 class BALLAWAY_API AObstacleSpawner : public AActor
@@ -21,8 +27,6 @@ public:
 
 private:
 
-	void ChooseSpawnLine();
-
 	class UBoxComponent* SpawnVolume;
 
 	UPROPERTY(EditAnywhere)
@@ -35,19 +39,35 @@ private:
 	UObjectPoolerComponent* ObjectPooler;
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
-	float SpawnCooldown;
+	float ItemSpawnCooldown;
 
-	FTimerHandle SpawnCooldownTimer;
+	void DecideObstacleSize();
+	void ChooseSpawnLine();
+	void Spawn();
 
+	// 아이템 생성 여부 검사
+	void SetCanItemSpawn();
+
+private : 
+
+	// 장애물 스폰 관련 변수
+	FTimerHandle ObstacleSpawnCooldownTimer;
+	
 	TArray<int32> SpawnLineNumber;
 
 	int32 SpawnObstacleNumber;
-
 	int32 ObstacleMin;
 	int32 ObstacleMax;
 	int32 LineNumMax;
 
+	// 페이즈 관련 변수
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Phase", meta = (AllowPrivateAccess = true))
+	EPhase CurrentPhase;
 
-	void Spawn();
+	// 아이템 관련 변수
+	FTimerHandle ItemSpawnCooldownTimer;
+
+	bool CanItemSpawn;
+	int32 ItemSpawnLine;
 
 };
