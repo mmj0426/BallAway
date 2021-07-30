@@ -17,8 +17,12 @@ class BALLAWAY_API UScoreWidget : public UUserWidget
 public : 
 	virtual void NativeConstruct() override;
 
-	 void SetPlayScore(float CurrentScore);
+	 void SetPlayScoreText(float CurrentScore);
+	 void GetBestScoreText();
 
 	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	 float PlayScore;
+	 float PlayScoreText;
+
+	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	 float BestScoreText;
 };

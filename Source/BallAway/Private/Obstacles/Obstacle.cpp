@@ -7,6 +7,10 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "UI/BAHUD.h"
+#include "UI/ScoreWidget.h"
+
 // Sets default values
 AObstacle::AObstacle()
 {
@@ -79,6 +83,19 @@ void AObstacle::SetDescentSpeed(float newSpeed)
 		auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
 		
 		GameMode->Save();
+
+		auto Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		//UGameplayStatics::OpenLevel(GetWorld(),TEXT("Cute_Zoo_3_Map"));
+		auto HUD = Cast<ABAHUD>(Controller->GetHUD());
+		auto ResultWidget = (Cast<ABAHUD>(Controller->GetHUD()))->GetGameResultWidget();
+		FInputModeUIOnly UIOnly;
+
+		ResultWidget->SetPlayScoreText(GameMode->PlayScore);
+		ResultWidget->GetBestScoreText();
+
+		ResultWidget->AddToViewport();
+		Controller->SetInputMode(UIOnly);
+
 	}
 
 	DescentSpeed = newSpeed;

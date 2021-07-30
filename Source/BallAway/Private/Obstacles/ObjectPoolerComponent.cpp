@@ -3,6 +3,7 @@
 #include "Obstacle.h"
 #include "Item/SpeedUpItem.h"
 
+//#include "Blueprint/WidgetBlueprintLibrary.h"
 
 UObjectPoolerComponent::UObjectPoolerComponent()
 {
@@ -89,6 +90,7 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	for (AObstacle* PoolableObstacle : Pool)
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
+
 		//BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
 	}
 

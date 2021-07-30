@@ -21,12 +21,21 @@ public :
 
 	virtual void BeginPlay();
 
+	// 플레이 중 스코어
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UScoreWidget> PlayScoreWidget;
 
+	// Load Best Score
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UScoreWidget> GameResultWidget;
+
 	UScoreWidget* GetPlayScoreWidget();
+	UScoreWidget* GetGameResultWidget();
 
 private : 
 	UPROPERTY()
 	class UScoreWidget* PlayScoreText;
+
+	UPROPERTY()
+	class UScoreWidget* ResultScoreText;
 };

@@ -2,13 +2,22 @@
 
 
 #include "UI/ScoreWidget.h"
+#include "GameMode/GM_InGame.h"
+
 
 void UScoreWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UScoreWidget::SetPlayScore(float CurrentScore)
+void UScoreWidget::SetPlayScoreText(float CurrentScore)
 {
-	PlayScore = CurrentScore;
+	PlayScoreText = CurrentScore;
+}
+
+void UScoreWidget::GetBestScoreText()
+{
+	auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
+
+	BestScoreText =	GameMode->BestScore;
 }

@@ -21,9 +21,19 @@ void ABAHUD::BeginPlay()
 			PlayScoreText->AddToViewport();
 		}
 	}
+
+	if (GameResultWidget)
+	{
+		ResultScoreText = CreateWidget<UScoreWidget>(GetWorld(), GameResultWidget);
+	}
 }
 
 UScoreWidget* ABAHUD::GetPlayScoreWidget()
 {
 	return PlayScoreText;
+}
+
+UScoreWidget* ABAHUD::GetGameResultWidget()
+{
+	return ResultScoreText;
 }

@@ -28,7 +28,7 @@ AGM_InGame::AGM_InGame()
 
 	HUDClass = HudClass.Class;
 
-	//Load();
+	BestScore = LoadScore();
 }
 
 void AGM_InGame::Save()
@@ -42,7 +42,10 @@ void AGM_InGame::Save()
 		SaveGameInstance->SaveIndex = 0;
 
 		// TODO : BestScore만 저장하기
-		SaveGameInstance->FirstScore = PlayScore;
+		if (BestScore < PlayScore)
+		{
+			SaveGameInstance->FirstScore = PlayScore;
+		}
 	}
 	else
 	{
@@ -52,7 +55,7 @@ void AGM_InGame::Save()
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SaveSlotName, SaveGameInstance->SaveIndex);
 }
 
-void AGM_InGame::Load()
+float AGM_InGame::LoadScore()
 {
 	UBASaveGame* LoadGameInstance = Cast<UBASaveGame>(UGameplayStatics::CreateSaveGameObject(UBASaveGame::StaticClass()));
 
@@ -64,5 +67,9 @@ void AGM_InGame::Load()
 		LoadGameInstance = Cast<UBASaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->SaveIndex));
 
 		BALOG(Warning, TEXT("Save Score : %f"), LoadGameInstance->FirstScore);
+
+		return LoadGameInstance->FirstScore;
 	}
+
+	return 0.f;
 }

@@ -150,9 +150,9 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			GameMode->PlayScore += 0.25f;
 
 			// UI : HUD가져와서 Score변수 갱신
-			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD());
+			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD())->GetPlayScoreWidget();
 			
-			ScoreWidget->GetPlayScoreWidget()->SetPlayScore(GameMode->PlayScore);
+			ScoreWidget->SetPlayScoreText(GameMode->PlayScore);
 
 			// 1점을 얻을 때마다 속력 감소
 			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
@@ -172,9 +172,6 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			{
 				CurrentPhase = EPhase::Phase3;
 			}
-
-
-			UE_LOG(LogTemp, Warning, TEXT("Play Score : %f"), GameMode->PlayScore);
 		}
 		ObstacleActor->Deactivate();
 	}

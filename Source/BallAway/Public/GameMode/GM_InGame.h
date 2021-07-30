@@ -19,7 +19,8 @@ public :
 	AGM_InGame();
 
 	void Save();
-	void Load();
+	float LoadScore();
 
 	float PlayScore;
+	float BestScore;
 };
