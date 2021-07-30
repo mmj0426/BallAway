@@ -8,7 +8,8 @@
 #include "BAGameInstance.h"
 #include "GM_InGame.h"
 #include "Item/SpeedUpItem.h"
-//#include "PhaseEnum.h"
+#include "UI/BAHUD.h"
+#include "UI/ScoreWidget.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
@@ -148,7 +149,10 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 			GameMode->PlayScore += 0.25f;
 
-			// TODO : HUD가져와서 Score변수 갱신
+			// UI : HUD가져와서 Score변수 갱신
+			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD());
+			
+			ScoreWidget->GetPlayScoreWidget()->SetPlayScore(GameMode->PlayScore);
 
 			// 1점을 얻을 때마다 속력 감소
 			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
@@ -156,7 +160,7 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 				ObjectPooler->DescentSpeedDecrease();
 
 				// 장애물의 속도가 느려지면 쿨타임도 같이 느려져야 함.
-				//ObjectPooler->ObstacleSpawnCooldown += ObjectPooler->GetSpeedReductionRate();
+				ObjectPooler->ObstacleSpawnCooldown += ObjectPooler->GetSpeedReductionRate();
 			}
 
 			// 스코어 갱신 후 비교해서 페이즈 갱신
@@ -178,17 +182,16 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 void AObstacleSpawner::SetCanItemSpawn()
 {
+
+	// 아이템 스폰 확률 적용
 	auto BAGameInstance = Cast<UBAGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	int32 RandomNum = FMath::RandRange(0, 99);
-	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
 
 	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetItemSpawnProb(FName(TEXT("SpeedUp")), CurrentPhase))
 	{
 		CanItemSpawn = true;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), CanItemSpawn);
 
 	return;
 

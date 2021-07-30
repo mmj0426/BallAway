@@ -47,6 +47,7 @@ void UObjectPoolerComponent::BeginPlay()
 				ASpeedUpItem* SpeedUpItem = World->SpawnActor<ASpeedUpItem>(ItemSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				SpeedUpItem->SetActive(false);
 				SpeedUpItem->SetDescentSpeed(DescentSpeed);
+				// Speed Up 아이템을 플레이어가 먹을 시 DescentSpeedIncrease 함수 호출
 				SpeedUpItem->OnGetItem.AddUObject(this, &UObjectPoolerComponent::DescentSpeedIncrease);
 				Items.Add(SpeedUpItem);
 			}
@@ -88,7 +89,7 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	for (AObstacle* PoolableObstacle : Pool)
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
-		BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
+		//BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
 	}
 
 	for (ASpeedUpItem* PoolableItem : Items)
@@ -104,7 +105,7 @@ void UObjectPoolerComponent::DescentSpeedIncrease()
 	for (AObstacle* PoolableObstacle : Pool)
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() + DescentSpeed * SpeedIncreaseRate);
-		BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
+		//BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
 	}
 
 	for (ASpeedUpItem* PoolableItem : Items)
