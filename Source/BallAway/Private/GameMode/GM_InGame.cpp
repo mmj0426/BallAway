@@ -28,7 +28,7 @@ AGM_InGame::AGM_InGame()
 
 	HUDClass = HudClass.Class;
 
-	Load();
+	//Load();
 }
 
 void AGM_InGame::Save()

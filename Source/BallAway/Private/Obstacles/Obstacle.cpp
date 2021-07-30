@@ -33,6 +33,7 @@ AObstacle::AObstacle()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollision->SetupAttachment(StaticMesh);
 	BoxCollision->SetRelativeLocation(FVector(0.f,0.f,50.f));
+	BoxCollision->SetRelativeRotation(FRotator(0.f,0.f,180.f));
 	BoxCollision->SetWorldScale3D(FVector(1.8f));
 	BoxCollision->SetCollisionProfileName(FName("OverlapOnlyPawn"));
 
