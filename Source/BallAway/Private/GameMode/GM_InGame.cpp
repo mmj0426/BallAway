@@ -28,7 +28,7 @@ AGM_InGame::AGM_InGame()
 
 	HUDClass = HudClass.Class;
 
-	BestScore = LoadScore();
+	//BestScore = LoadScore();
 }
 
 void AGM_InGame::Save()
@@ -45,6 +45,10 @@ void AGM_InGame::Save()
 		if (BestScore < PlayScore)
 		{
 			SaveGameInstance->FirstScore = PlayScore;
+		}
+		else
+		{
+			SaveGameInstance->FirstScore = BestScore;
 		}
 	}
 	else

@@ -3,6 +3,11 @@
 #include "Obstacle.h"
 #include "Item/SpeedUpItem.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "UI/BAHUD.h"
+#include "UI/ScoreWidget.h"
+#include "GM_InGame.h"
+
 //#include "Blueprint/WidgetBlueprintLibrary.h"
 
 UObjectPoolerComponent::UObjectPoolerComponent()
@@ -33,6 +38,10 @@ void UObjectPoolerComponent::BeginPlay()
 				AObstacle* PoolableObstacle = World->SpawnActor<AObstacle>(ObstacleSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				PoolableObstacle->SetActive(false);
 				PoolableObstacle->SetDescentSpeed(DescentSpeed);
+				if (i == 0)
+				{
+					PoolableObstacle->Tags.Add("GameOver Obstacle");
+				}
 				Pool.Add(PoolableObstacle);
 			}
 		}
@@ -90,6 +99,26 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	for (AObstacle* PoolableObstacle : Pool)
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
+
+		// 속도가 0 이하일 때 GameOver UI 띄움
+		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 0.f)
+		{
+			auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
+
+			GameMode->Save();
+
+			auto Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+			//UGameplayStatics::OpenLevel(GetWorld(),TEXT("Cute_Zoo_3_Map"));
+			auto HUD = Cast<ABAHUD>(Controller->GetHUD());
+			auto ResultWidget = (Cast<ABAHUD>(Controller->GetHUD()))->GetGameResultWidget();
+			FInputModeUIOnly UIOnly;
+
+			ResultWidget->SetPlayScoreText(GameMode->PlayScore);
+			ResultWidget->GetBestScoreText();
+
+			ResultWidget->AddToViewport();
+			Controller->SetInputMode(UIOnly);
+		}
 
 		//BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());
 	}

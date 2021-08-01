@@ -191,7 +191,7 @@ void AObstacleSpawner::SetCanItemSpawn()
 	}
 
 	return;
-
+	//CanItemSpawn = true;
 }
 
 
