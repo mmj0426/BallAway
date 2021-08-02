@@ -100,13 +100,13 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
 
-		// 속도가 0 이하일 때 GameOver UI 띄움
 		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 0.f)
 		{
 			auto GameMode = Cast<AGM_InGame>(GetWorld()->GetAuthGameMode());
 
 			GameMode->Save();
-
+			
+			// 속도가 0 이하일 때 GameOver UI 띄움
 			auto Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 			//UGameplayStatics::OpenLevel(GetWorld(),TEXT("Cute_Zoo_3_Map"));
 			auto HUD = Cast<ABAHUD>(Controller->GetHUD());

@@ -28,7 +28,7 @@ AGM_InGame::AGM_InGame()
 
 	HUDClass = HudClass.Class;
 
-	//BestScore = LoadScore();
+	BestScore = LoadScore();
 }
 
 void AGM_InGame::Save()
@@ -69,10 +69,17 @@ float AGM_InGame::LoadScore()
 		LoadGameInstance->SaveIndex = 0;
 
 		LoadGameInstance = Cast<UBASaveGame>(UGameplayStatics::LoadGameFromSlot(LoadGameInstance->SaveSlotName, LoadGameInstance->SaveIndex));
+		if (nullptr == LoadGameInstance)
+		{
+			return 0.f;
+		}
+		else
+		{
+			return LoadGameInstance->FirstScore;
+		}
 
 		BALOG(Warning, TEXT("Save Score : %f"), LoadGameInstance->FirstScore);
 
-		return LoadGameInstance->FirstScore;
 	}
 
 	return 0.f;
