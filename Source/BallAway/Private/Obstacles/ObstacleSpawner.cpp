@@ -5,6 +5,7 @@
 
 #include "ObjectPoolerComponent.h"
 #include "Obstacle.h"
+#include "Obstacles/AnimalObstacles.h"
 #include "BAGameInstance.h"
 #include "GM_InGame.h"
 #include "Item/SpeedUpItem.h"
@@ -138,7 +139,7 @@ void AObstacleSpawner::ChooseSpawnLine()
 
 void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto ObstacleActor = Cast<AObstacle>(OtherActor);
+	auto ObstacleActor = Cast<AAnimalObstacles>(OtherActor);
 
 	if (nullptr != ObstacleActor)
 	{
@@ -202,7 +203,7 @@ void AObstacleSpawner::Spawn()
 
 	for (int i = 0; i < SpawnLineNumber.Num(); i++)
 	{
-		AObstacle* ObstacleActor = ObjectPooler->GetPooledObstacle();
+		AAnimalObstacles* ObstacleActor = ObjectPooler->GetPooledObstacle();
 
 		// Obstacle 클래스가 null 이면 오류 띄우고 return
 		if (nullptr == ObstacleActor)

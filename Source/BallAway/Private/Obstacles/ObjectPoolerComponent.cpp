@@ -1,6 +1,7 @@
 
 #include "Obstacles/ObjectPoolerComponent.h"
 #include "Obstacle.h"
+#include "Obstacles/AnimalObstacles.h"
 #include "Item/SpeedUpItem.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -35,7 +36,7 @@ void UObjectPoolerComponent::BeginPlay()
 			// 생성된 오브젝트는 비활성인 상태로 Pool에 들어감
 			for (int i = 0; i < PoolSize; i++)
 			{
-				AObstacle* PoolableObstacle = World->SpawnActor<AObstacle>(ObstacleSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
+				AAnimalObstacles* PoolableObstacle = World->SpawnActor<AAnimalObstacles>(ObstacleSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				PoolableObstacle->SetActive(false);
 				PoolableObstacle->SetDescentSpeed(DescentSpeed);
 				if (i == 0)
@@ -67,9 +68,9 @@ void UObjectPoolerComponent::BeginPlay()
 	Super::BeginPlay();	
 }
 
-AObstacle* UObjectPoolerComponent::GetPooledObstacle()
+AAnimalObstacles* UObjectPoolerComponent::GetPooledObstacle()
 {
-	for (AObstacle* PoolableObstacle : Pool)
+	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		if (!PoolableObstacle->IsActive())
 		{
@@ -96,7 +97,7 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 {	
 	ObstacleSpawnCooldown += SpeedIncreaseRate;
 
-	for (AObstacle* PoolableObstacle : Pool)
+	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
 
@@ -133,7 +134,7 @@ void UObjectPoolerComponent::DescentSpeedIncrease()
 {
 	ObstacleSpawnCooldown -= SpeedIncreaseRate;
 
-	for (AObstacle* PoolableObstacle : Pool)
+	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() + DescentSpeed * SpeedIncreaseRate);
 		//BALOG(Warning, TEXT("Descent Speed : %f"), PoolableObstacle->GetDescentSpeed());

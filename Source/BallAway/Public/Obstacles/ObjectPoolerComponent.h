@@ -8,6 +8,7 @@
 #include "ObjectPoolerComponent.generated.h"
 
 class AObstacle;
+class AAnimalObstacles;
 class ASpeedUpItem;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -20,7 +21,7 @@ public:
 	UObjectPoolerComponent();
 	virtual void BeginPlay() override;
 
-	AObstacle* GetPooledObstacle();
+	AAnimalObstacles* GetPooledObstacle();
 	ASpeedUpItem* GetPooledItem();
 
 	UFUNCTION()
@@ -38,7 +39,7 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere, Category = ObjectPooler)
-	TSubclassOf<class AObstacle> ObstacleSubClass;
+	TSubclassOf<class AAnimalObstacles> ObstacleSubClass;
 
 	UPROPERTY(EditAnywhere, Category = ObjectPooler)
 	TSubclassOf<class ASpeedUpItem> ItemSubClass;
@@ -53,7 +54,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Obstacle Speed")
 	float DescentSpeed;
 		
-	TArray<AObstacle*> Pool;
+	TArray<AAnimalObstacles*> Pool;
 	TArray<ASpeedUpItem*>Items;
 
 	// 속력 감소율
