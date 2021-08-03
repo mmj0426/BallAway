@@ -4,7 +4,7 @@
 
 #include "../BallAway.h"
 #include "Components/ActorComponent.h"
-
+#include "Obstacles/PhaseEnum.h"
 #include "ObjectPoolerComponent.generated.h"
 
 class AObstacle;
@@ -31,6 +31,10 @@ public:
 	void DescentSpeedIncrease();
 
 	FORCEINLINE float GetSpeedReductionRate() const {return SpeedDecreaseRate;}
+
+	// Skeletal Mesh 변경
+	void SetAnimalObstacleMesh(EPhase CurrentPhase);
+
 
 	// 스폰 쿨타임
 	UPROPERTY(EditAnywhere,Category = "Obstacle Speed")
@@ -64,5 +68,6 @@ private:
 	// 속력 증가율
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle Speed", meta = (AllowPrivateAccess = true))
 	float SpeedIncreaseRate;
+
 
 };

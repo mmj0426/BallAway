@@ -4,6 +4,7 @@
 
 #include "../BallAway.h"
 #include "Obstacles/Obstacle.h"
+#include "Obstacles/PhaseEnum.h"
 #include "AnimalObstacles.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHitPlayer);
@@ -22,6 +23,8 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void SetAnimalMesh(EPhase CurrentPhase);
+
 	FOnHitPlayer OnHitPlayer;
 
 	// Skeletal Mesh
@@ -36,4 +39,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class USkeletalMesh* OstrichMesh;
+
+	// Animation Asset
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimationAsset* BullRunAnim;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimationAsset* MuleRunAnim;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimationAsset* OstrichRunAnim;
+
 };

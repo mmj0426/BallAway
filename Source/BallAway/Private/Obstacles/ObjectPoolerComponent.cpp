@@ -145,3 +145,11 @@ void UObjectPoolerComponent::DescentSpeedIncrease()
 		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() + DescentSpeed * SpeedIncreaseRate);
 	}
 }
+
+void UObjectPoolerComponent::SetAnimalObstacleMesh(EPhase CurrentPhase)
+{
+	for (AAnimalObstacles* AnimalObstacles : Pool)
+	{
+		AnimalObstacles->SetAnimalMesh(CurrentPhase);
+	}
+}

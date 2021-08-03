@@ -34,7 +34,7 @@ AObstacleSpawner::AObstacleSpawner()
 
 	DeactivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("DeactivateVolume"));
 	DeactivateVolume->SetupAttachment(RootComponent);
-	DeactivateVolume->SetRelativeScale3D(FVector(0.5f,0.5f,0.5f));
+	DeactivateVolume->SetRelativeScale3D(FVector(0.5f));
 	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::OnOverlapBegin);
 	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
 
@@ -51,6 +51,7 @@ AObstacleSpawner::AObstacleSpawner()
 void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
+	ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 	
 	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 	GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this,&AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
@@ -168,10 +169,12 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			if (GameMode->PlayScore == 40.25)
 			{
 				CurrentPhase = EPhase::Phase2;
+				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 			if (GameMode->PlayScore == 90.25)
 			{
 				CurrentPhase = EPhase::Phase3;
+				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 		}
 		ObstacleActor->Deactivate();
