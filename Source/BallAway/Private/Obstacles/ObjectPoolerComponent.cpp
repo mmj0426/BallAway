@@ -22,6 +22,7 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 
 	DescentSpeed = 2.f;
 	SpeedDecreaseRate = 0.02f;
+	DecreaseCount = 0;
 	SpeedIncreaseRate = 0.1f;
 }
 
@@ -39,6 +40,7 @@ void UObjectPoolerComponent::BeginPlay()
 				AAnimalObstacles* PoolableObstacle = World->SpawnActor<AAnimalObstacles>(ObstacleSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				PoolableObstacle->SetActive(false);
 				PoolableObstacle->SetDescentSpeed(DescentSpeed);
+				PoolableObstacle->OnHitPlayer.AddUObject(this, &UObjectPoolerComponent::DescentSpeedDecrease);
 				if (i == 0)
 				{
 					PoolableObstacle->Tags.Add("GameOver Obstacle");
@@ -96,10 +98,11 @@ ASpeedUpItem* UObjectPoolerComponent::GetPooledItem()
 void UObjectPoolerComponent::DescentSpeedDecrease()
 {	
 	ObstacleSpawnCooldown += SpeedIncreaseRate;
+	DecreaseCount++;
 
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
-		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
+		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount);
 
 		// 속도가 0 이하일 때 GameOver UI 띄움
 		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 0.f)

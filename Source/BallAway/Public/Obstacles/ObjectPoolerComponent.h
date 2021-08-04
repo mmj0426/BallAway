@@ -65,6 +65,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle Speed", meta = (AllowPrivateAccess = true))
 	float SpeedDecreaseRate;
 
+	int32 DecreaseCount;
+
 	// 속력 증가율
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle Speed", meta = (AllowPrivateAccess = true))
 	float SpeedIncreaseRate;
