@@ -17,29 +17,24 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	//virtual void SetLifeSpan(float newLifeSpan) override;
 
-	FORCEINLINE class UStaticMeshComponent* GetMesh() const { return StaticMesh; }
-
-	void SetActive(bool newActive);
+	// 활성화
+	bool Active;
 	bool IsActive();
-
-	//void SetVelocity(float newVelocity);
-	//void SetDirection(FVector newDirection);
-	void SetDescentSpeed(float newSpeed);
+	void SetActive(bool newActive);
 	void Deactivate();
 
-protected:
+	// 하강 속도
+	float DescentSpeed;
+	void SetDescentSpeed(float newSpeed);
 
+	// Mesh
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UStaticMeshComponent* StaticMesh;
 
-	float DescentSpeed;
+	FORCEINLINE float GetDescentSpeed() const { return DescentSpeed; }
 
-	//float Lifespan;
-	//FTimerHandle LifespanTimer;
-	bool Active;
-	//float Velocity;
-	//FVector Direction;
-
-
+	// Collision
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
+	class UBoxComponent* BoxCollision;
 };
