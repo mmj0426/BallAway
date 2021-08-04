@@ -35,7 +35,6 @@ public:
 	// Skeletal Mesh 변경
 	void SetAnimalObstacleMesh(EPhase CurrentPhase);
 
-
 	// 스폰 쿨타임
 	UPROPERTY(EditAnywhere,Category = "Obstacle Speed")
 	float ObstacleSpawnCooldown;

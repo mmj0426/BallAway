@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../BallAway.h"
 #include "Components/ActorComponent.h"
 #include "MapSpawnerComponent.generated.h"
 
+class AMapActor;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BALLAWAY_API UMapSpawnerComponent : public UActorComponent
@@ -13,16 +12,31 @@ class BALLAWAY_API UMapSpawnerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UMapSpawnerComponent();
-
-protected:
-	// Called when the game starts
+	
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	AMapActor* GetLeftMaps();
+	AMapActor* GetRightMaps();
 
-		
+private : 
+
+	int32 SpawnSize;
+
+	TArray<AMapActor*> LeftMaps;
+	TArray<AMapActor*> RightMaps;
+
+	UPROPERTY(EditAnywhere, Category = "Map")
+		TSubclassOf<class AMapActor> LeftMap1;
+
+	UPROPERTY(EditAnywhere, Category = "Map")
+		TSubclassOf<class AMapActor> LeftMap2;
+
+	UPROPERTY(EditAnywhere, Category = "Map")
+		TSubclassOf<class AMapActor> RightMap1;
+
+	UPROPERTY(EditAnywhere, Category = "Map")
+		TSubclassOf<class AMapActor> RightMap2;
+
+
 };

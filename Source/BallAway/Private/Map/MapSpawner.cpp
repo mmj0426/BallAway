@@ -1,27 +1,62 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Map/MapSpawner.h"
+#include "Map/MapActor.h"
+#include "Map/MapSpawnerComponent.h"
 
-// Sets default values
+#include "Components/BoxComponent.h"
+
+
 AMapSpawner::AMapSpawner()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	LeftSpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftSpawnVolume"));
+	RootComponent = LeftSpawnVolume;
+
+	RightSpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("RightSpawnVolume"));
+	RightSpawnVolume->SetRelativeLocation(FVector(-2000.f,0.f,0.f));
+	
+	MapComponent = CreateDefaultSubobject<UMapSpawnerComponent>(TEXT("MapComponent"));
 }
 
-// Called when the game starts or when spawned
 void AMapSpawner::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MapSpawn();
 	
 }
 
-// Called every frame
-void AMapSpawner::Tick(float DeltaTime)
+void AMapSpawner::MapSpawn()
 {
-	Super::Tick(DeltaTime);
+	// Left Map
+	AMapActor* LeftMapActor = MapComponent->GetLeftMaps();
+	
+	if (nullptr == LeftMapActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained."));
+		return;
+	}
+
+	FVector LeftLocation = FVector(LeftSpawnVolume->GetComponentLocation().X, LeftSpawnVolume->GetComponentLocation().Y, 30.f);
+
+	BALOG(Warning, TEXT("LeftLocation : %f, %f"), -LeftSpawnVolume->Bounds.BoxExtent.X, -LeftSpawnVolume->Bounds.BoxExtent.Y)
+
+	LeftMapActor->SetActorLocation(LeftLocation);
+	LeftMapActor->SetActive(true);
+
+	// Right Map
+	AMapActor* RightMapActor = MapComponent->GetRightMaps();
+
+	if (nullptr == RightMapActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot spawn - object pool drained."));
+		return;
+	}
+
+	FVector RightLocation = FVector(RightSpawnVolume->GetComponentLocation().X, RightSpawnVolume->GetComponentLocation().Y, 30.f);
+
+	RightMapActor->SetActorLocation(RightLocation);
+	RightMapActor->SetActive(true);
 
 }
-

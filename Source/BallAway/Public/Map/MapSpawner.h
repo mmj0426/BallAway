@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "../BallAway.h"
 #include "GameFramework/Actor.h"
 #include "MapSpawner.generated.h"
+
+class AMapActor;
+class UMapSpawnerComponent;
 
 UCLASS()
 class BALLAWAY_API AMapSpawner : public AActor
@@ -12,12 +13,23 @@ class BALLAWAY_API AMapSpawner : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+
 	AMapSpawner();
 
-protected:
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaTime) override;
+	void MapSpawn();
+
+private : 
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* LeftSpawnVolume;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* RightSpawnVolume;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	UMapSpawnerComponent* MapComponent;
+
 
 };
