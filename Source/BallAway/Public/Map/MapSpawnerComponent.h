@@ -19,6 +19,8 @@ public:
 	AMapActor* GetLeftMaps();
 	AMapActor* GetRightMaps();
 
+	void SetDescentSpeed(float DescentSpeed);
+
 private : 
 
 	int32 SpawnSize;

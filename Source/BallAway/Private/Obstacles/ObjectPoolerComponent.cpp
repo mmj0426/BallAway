@@ -3,6 +3,8 @@
 #include "Obstacle.h"
 #include "Obstacles/AnimalObstacles.h"
 #include "Item/SpeedUpItem.h"
+#include "Map/MapSpawner.h"
+#include "Map/MapSpawnerComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "UI/BAHUD.h"
@@ -67,6 +69,17 @@ void UObjectPoolerComponent::BeginPlay()
 		}
 	}
 
+	// Map Speed Synchronize
+	TArray<AActor*>MapSpawners;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner", MapSpawners);
+
+	if (MapSpawners.Num() > 0)
+	{
+		auto MapSpawner = Cast<AMapSpawner>(MapSpawners[0]);
+
+		MapSpawner->MapComponent->SetDescentSpeed(DescentSpeed);
+	}
+
 	Super::BeginPlay();	
 }
 
@@ -100,9 +113,12 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	ObstacleSpawnCooldown += SpeedIncreaseRate;
 	DecreaseCount++;
 
+	float Speed = 0.f;
+
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
-		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount);
+		Speed = PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount;
+		PoolableObstacle->SetDescentSpeed(Speed);
 
 		// 속도가 0 이하일 때 GameOver UI 띄움
 		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 0.f)
@@ -129,8 +145,20 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 
 	for (ASpeedUpItem* PoolableItem : Items)
 	{
-		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount);
+		PoolableItem->SetDescentSpeed(Speed);
 	}
+
+	// Map Speed Synchronize
+	TArray<AActor*>MapSpawners;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner",MapSpawners);
+
+	if (MapSpawners.Num() > 0)
+	{
+		auto MapSpawner = Cast<AMapSpawner>(MapSpawners[0]);
+
+		MapSpawner->MapComponent->SetDescentSpeed(Speed);
+	}
+
 }
 
 void UObjectPoolerComponent::DescentSpeedIncrease()

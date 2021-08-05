@@ -77,3 +77,16 @@ AMapActor* UMapSpawnerComponent::GetRightMaps()
 	return nullptr;
 }
 
+void UMapSpawnerComponent::SetDescentSpeed(float DescentSpeed)
+{
+	for (AMapActor* LeftMap : LeftMaps)
+	{
+		LeftMap->SetDescentSpeed(DescentSpeed);
+	}
+
+	for (AMapActor* RightMap : RightMaps)
+	{
+		RightMap->SetDescentSpeed(DescentSpeed);
+	}
+}
+

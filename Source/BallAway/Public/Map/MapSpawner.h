@@ -20,6 +20,10 @@ public:
 
 	void MapSpawn();
 
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	UMapSpawnerComponent* MapComponent;
+
+
 private : 
 
 	UPROPERTY(EditAnywhere)
@@ -27,9 +31,6 @@ private :
 
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* RightSpawnVolume;
-
-	UPROPERTY(EditAnywhere, Category = Spawner)
-	UMapSpawnerComponent* MapComponent;
 
 
 };

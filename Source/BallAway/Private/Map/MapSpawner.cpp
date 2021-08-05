@@ -17,6 +17,9 @@ AMapSpawner::AMapSpawner()
 	RightSpawnVolume->SetRelativeLocation(FVector(-2000.f,0.f,0.f));
 	
 	MapComponent = CreateDefaultSubobject<UMapSpawnerComponent>(TEXT("MapComponent"));
+
+	this->Tags.Add(TEXT("MapSpawner"));
+
 }
 
 void AMapSpawner::BeginPlay()
@@ -60,3 +63,4 @@ void AMapSpawner::MapSpawn()
 	RightMapActor->SetActive(true);
 
 }
+
