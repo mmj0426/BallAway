@@ -51,6 +51,7 @@ AObstacleSpawner::AObstacleSpawner()
 void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
+
 	ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 	
 	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
