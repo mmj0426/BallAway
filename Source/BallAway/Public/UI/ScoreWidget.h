@@ -20,9 +20,15 @@ public :
 	 void SetPlayScoreText(float CurrentScore);
 	 void GetBestScoreText();
 
-	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	 float PlayScoreText;
 
-	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	 float BestScoreText;
+
+	 //UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	 //class UButton* PauseButton;
+
+	 UFUNCTION()
+		 void OnPauseTouched();
 };
