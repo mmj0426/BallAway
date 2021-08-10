@@ -5,7 +5,6 @@
 
 #include "ObjectPoolerComponent.h"
 #include "Obstacle.h"
-#include "Obstacles/AnimalObstacles.h"
 #include "BAGameInstance.h"
 #include "GM_InGame.h"
 #include "Item/SpeedUpItem.h"
@@ -34,7 +33,7 @@ AObstacleSpawner::AObstacleSpawner()
 
 	DeactivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("DeactivateVolume"));
 	DeactivateVolume->SetupAttachment(RootComponent);
-	DeactivateVolume->SetRelativeScale3D(FVector(0.5f));
+	DeactivateVolume->SetRelativeScale3D(FVector(0.5f,0.5f,0.5f));
 	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::OnOverlapBegin);
 	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
 
@@ -51,8 +50,6 @@ AObstacleSpawner::AObstacleSpawner()
 void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 	
 	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 	GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this,&AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
@@ -141,7 +138,7 @@ void AObstacleSpawner::ChooseSpawnLine()
 
 void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto ObstacleActor = Cast<AAnimalObstacles>(OtherActor);
+	auto ObstacleActor = Cast<AObstacle>(OtherActor);
 
 	if (nullptr != ObstacleActor)
 	{
@@ -170,12 +167,10 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			if (GameMode->PlayScore == 40.25)
 			{
 				CurrentPhase = EPhase::Phase2;
-				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 			if (GameMode->PlayScore == 90.25)
 			{
 				CurrentPhase = EPhase::Phase3;
-				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 		}
 		ObstacleActor->Deactivate();
@@ -207,7 +202,7 @@ void AObstacleSpawner::Spawn()
 
 	for (int i = 0; i < SpawnLineNumber.Num(); i++)
 	{
-		AAnimalObstacles* ObstacleActor = ObjectPooler->GetPooledObstacle();
+		AObstacle* ObstacleActor = ObjectPooler->GetPooledObstacle();
 
 		// Obstacle 클래스가 null 이면 오류 띄우고 return
 		if (nullptr == ObstacleActor)
