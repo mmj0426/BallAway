@@ -5,7 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "UI/BAHUD.h"
-#include "UI/ScoreWidget.h"
+#include "UI/GameResultWidget.h"
 #include "GM_InGame.h"
 
 //#include "Blueprint/WidgetBlueprintLibrary.h"
@@ -113,8 +113,8 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 			auto ResultWidget = (Cast<ABAHUD>(Controller->GetHUD()))->GetGameResultWidget();
 			FInputModeUIOnly UIOnly;
 
-			ResultWidget->SetPlayScoreText(GameMode->PlayScore);
-			ResultWidget->GetBestScoreText();
+			ResultWidget->SetPlayScoreText();
+			ResultWidget->SetBestScoreText();
 
 			ResultWidget->AddToViewport();
 			Controller->SetInputMode(UIOnly);

@@ -16,7 +16,7 @@ AMapSpawner::AMapSpawner()
 	RightSpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("RightSpawnVolume"));
 	RightSpawnVolume->SetRelativeLocation(FVector(-2000.f,0.f,0.f));
 	
-	ActivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("DeactivateVolume"));
+	ActivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("ActivateVolume"));
 	ActivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AMapSpawner::OnOverlapBegin);
 
 	MapComponent = CreateDefaultSubobject<UMapSpawnerComponent>(TEXT("MapComponent"));
