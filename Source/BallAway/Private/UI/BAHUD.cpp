@@ -2,7 +2,9 @@
 
 
 #include "UI/BAHUD.h"
-#include "UI/ScoreWidget.h"
+#include "UI/InGameWidget.h"
+#include "UI/GameResultWidget.h"
+#include "UI/PauseWidget.h"
 
 ABAHUD::ABAHUD()
 {
@@ -13,27 +15,37 @@ void ABAHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (PlayScoreWidget)
+	if (InGameWidgetClass)
 	{
-		PlayScoreText = CreateWidget<UScoreWidget>(GetWorld(), PlayScoreWidget);
-		if (PlayScoreText)
+		InGameWidget = CreateWidget<UInGameWidget>(GetWorld(), InGameWidgetClass);
+		if (InGameWidget)
 		{
-			PlayScoreText->AddToViewport();
+			InGameWidget->AddToViewport();
 		}
 	}
 
-	if (GameResultWidget)
+	if (GameResultWidgetClass)
 	{
-		ResultScoreText = CreateWidget<UScoreWidget>(GetWorld(), GameResultWidget);
+		GameResultWidget = CreateWidget<UGameResultWidget>(GetWorld(), GameResultWidgetClass);
+	}
+
+	if (PauseMenuWidgetClass)
+	{
+		PauseMenuWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseMenuWidgetClass);
 	}
 }
 
-UScoreWidget* ABAHUD::GetPlayScoreWidget()
+UInGameWidget* ABAHUD::GetInGameWidget()
 {
-	return PlayScoreText;
+	return InGameWidget;
 }
 
-UScoreWidget* ABAHUD::GetGameResultWidget()
+UGameResultWidget* ABAHUD::GetGameResultWidget()
 {
-	return ResultScoreText;
+	return GameResultWidget;
+}
+
+UPauseWidget* ABAHUD::GetPauseMenuWidget()
+{
+	return PauseMenuWidget;
 }

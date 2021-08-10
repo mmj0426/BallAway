@@ -10,7 +10,7 @@
 #include "GM_InGame.h"
 #include "Item/SpeedUpItem.h"
 #include "UI/BAHUD.h"
-#include "UI/ScoreWidget.h"
+#include "UI/InGameWidget.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
@@ -153,7 +153,7 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			GameMode->PlayScore += 0.25f;
 
 			// UI : HUD가져와서 Score변수 갱신
-			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD())->GetPlayScoreWidget();
+			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD())->GetInGameWidget();
 			
 			ScoreWidget->SetPlayScoreText(GameMode->PlayScore);
 
