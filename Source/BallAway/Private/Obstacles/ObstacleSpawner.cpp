@@ -222,7 +222,7 @@ void AObstacleSpawner::Spawn()
 		float ObstacleXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1/2 - Distance / LineNumMax * SpawnLineNumber[i];
 		//UE_LOG(LogTemp, Warning, TEXT("Spawn Number : %d."), SpawnLineNumber[i]);
 
-		FVector ActorLocation = FVector(ObstacleXLoc, SpawnVolume->Bounds.BoxExtent.Y, 70.f);
+		FVector ActorLocation = FVector(ObstacleXLoc, SpawnVolume->Bounds.BoxExtent.Y, 90.f);
 		
 		ObstacleActor->SetActorLocation(ActorLocation);
 		ObstacleActor->SetActive(true);
@@ -240,7 +240,7 @@ void AObstacleSpawner::Spawn()
 		// 아이템 생성
 		float Distance = 2 * SpawnVolume->Bounds.BoxExtent.X;
 		float ItemXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1 / 2 - Distance / LineNumMax * ItemSpawnLine;
-		FVector SpawnLocation = FVector(ItemXLoc, SpawnVolume->Bounds.BoxExtent.Y, 20.f);
+		FVector SpawnLocation = FVector(ItemXLoc, SpawnVolume->Bounds.BoxExtent.Y, 90.f);
 
 		ASpeedUpItem* SpeedUpItemActor = ObjectPooler->GetPooledItem();
 		if (nullptr == SpeedUpItemActor)
