@@ -1,28 +1,28 @@
 
 #include "Item/SpeedUpItem.h"
 #include "PlayerCharacter/PlayerCharacter.h"
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 
 ASpeedUpItem::ASpeedUpItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		ItemMesh(TEXT("/Game/BasicAsset/Shape_Cube_2.Shape_Cube_2"));
-	if (ItemMesh.Succeeded())
-	{
-		StaticMesh->SetStaticMesh(ItemMesh.Object);
-		StaticMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-		StaticMesh->SetWorldScale3D(FVector(1.8f));
-		StaticMesh->SetSimulatePhysics(false);
-	}
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh>
+	//	ItemMesh(TEXT("/Game/BasicAsset/Shape_Cube_2.Shape_Cube_2"));
+	//if (ItemMesh.Succeeded())
+	//{
+	//	StaticMesh->SetStaticMesh(ItemMesh.Object);
+	//	StaticMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	//	StaticMesh->SetWorldScale3D(FVector(1.8f));
+	//	StaticMesh->SetSimulatePhysics(false);
+	//}
 }
 
 void ASpeedUpItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ASpeedUpItem::OnOverlapBegin);
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &ASpeedUpItem::OnOverlapBegin);
 }
 
 void ASpeedUpItem::Tick(float DeltaTime)

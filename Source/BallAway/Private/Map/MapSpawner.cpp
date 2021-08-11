@@ -71,7 +71,7 @@ void AMapSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 
 	if (nullptr != MapActor && OtherComp->ComponentHasTag(TEXT("MapSpawn")))
 	{
-		MapSpawn(LeftSpawnVolume->GetComponentLocation().Y + 3500.f, RightSpawnVolume->GetComponentLocation().Y + 3500.f);
+		MapSpawn(LeftSpawnVolume->GetComponentLocation().Y + 1800.f, RightSpawnVolume->GetComponentLocation().Y + 1800.f);
 	}
 
 	if (nullptr != MapActor && OtherComp->ComponentHasTag(TEXT("Deactivate")))

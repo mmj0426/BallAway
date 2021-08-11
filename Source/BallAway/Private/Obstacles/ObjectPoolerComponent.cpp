@@ -6,6 +6,7 @@
 #include "Map/MapSpawner.h"
 #include "Map/MapSpawnerComponent.h"
 
+#include "Math/UnrealMathUtility.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/BAHUD.h"
 #include "UI/GameResultWidget.h"
@@ -75,6 +76,7 @@ void UObjectPoolerComponent::BeginPlay()
 
 	if (MapSpawners.Num() > 0)
 	{
+		//BALOG(Warning, TEXT("asdf"));
 		auto MapSpawner = Cast<AMapSpawner>(MapSpawners[0]);
 
 		MapSpawner->MapComponent->SetDescentSpeed(DescentSpeed);
@@ -110,14 +112,14 @@ ASpeedUpItem* UObjectPoolerComponent::GetPooledItem()
 
 void UObjectPoolerComponent::DescentSpeedDecrease()
 {	
-	ObstacleSpawnCooldown += SpeedIncreaseRate;
-	DecreaseCount++;
-
 	float Speed = 0.f;
+
+	ObstacleSpawnCooldown += Speed;
+	DecreaseCount++;
 
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
-		Speed = PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount;
+		Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount,0,DescentSpeed);
 		PoolableObstacle->SetDescentSpeed(Speed);
 
 		// 속도가 0 이하일 때 GameOver UI 띄움
