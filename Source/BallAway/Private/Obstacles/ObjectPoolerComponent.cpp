@@ -124,7 +124,7 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 		PoolableObstacle->SetDescentSpeed(Speed);
 
 		// 속도가 0 이하일 때 GameOver UI 띄움
-		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 0.f)
+		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 1.f)
 		{
 			// 일시 정지 후 UI 띄우기
 			UGameplayStatics::SetGamePaused(GetWorld(), true);
