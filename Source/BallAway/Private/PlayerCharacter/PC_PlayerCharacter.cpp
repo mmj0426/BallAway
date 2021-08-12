@@ -5,6 +5,7 @@
 #include "PlayerCharacter/PlayerCharacter.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 void APC_PlayerCharacter::BeginPlay()
 {
@@ -70,6 +71,8 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 			BAPlayer->SetActorHiddenInGame(false);
 
 			IsPlayerSpawned = true;
+
+			OnPlayerSpawned.Broadcast();
 		}
 
 	}

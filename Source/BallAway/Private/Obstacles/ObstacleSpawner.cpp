@@ -3,6 +3,7 @@
 
 #include "Obstacles/ObstacleSpawner.h"
 
+#include "PlayerCharacter/PC_PlayerCharacter.h"
 #include "ObjectPoolerComponent.h"
 #include "Obstacle.h"
 #include "Obstacles/AnimalObstacles.h"
@@ -35,8 +36,10 @@ AObstacleSpawner::AObstacleSpawner()
 	DeactivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("DeactivateVolume"));
 	DeactivateVolume->SetupAttachment(RootComponent);
 	DeactivateVolume->SetRelativeScale3D(FVector(0.5f));
-	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::OnOverlapBegin);
-	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
+
+	PauseVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("PauseVolume"));
+	PauseVolume->SetupAttachment(RootComponent);
+	IsFirstOverlap = true;
 
 	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
 
@@ -53,9 +56,25 @@ void AObstacleSpawner::BeginPlay()
 	Super::BeginPlay();
 
 	ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
+
+	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::DeactivateOverlapBegin);
+	PauseVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::PauseOverlapBegin);
 	
-	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
-	GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this,&AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
+	Spawn();
+
+	auto PlayerController = Cast<APC_PlayerCharacter>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+	if (PlayerController)
+	{
+		PlayerController->OnPlayerSpawned.AddLambda([this]()->void
+		{
+			ObjectPooler->SetSpeed(ObjectPooler->GetDescentSpeed());
+			BALOG(Error, TEXT("Descent Speed : %f "), ObjectPooler->GetDescentSpeed());
+			GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this, &AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
+			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
+				
+		});
+	}
+
 }
 
 void AObstacleSpawner::DecideObstacleSize()
@@ -139,7 +158,7 @@ void AObstacleSpawner::ChooseSpawnLine()
 	
 }
 
-void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AObstacleSpawner::DeactivateOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto ObstacleActor = Cast<AAnimalObstacles>(OtherActor);
 
@@ -161,9 +180,6 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 			if (FMath::Fmod(GameMode->PlayScore, 1) == 0.f)
 			{
 				ObjectPooler->DescentSpeedDecrease();
-
-				// 장애물의 속도가 느려지면 쿨타임도 같이 느려져야 함.
-				ObjectPooler->ObstacleSpawnCooldown += ObjectPooler->GetSpeedReductionRate();
 			}
 
 			// 스코어 갱신 후 비교해서 페이즈 갱신
@@ -180,6 +196,22 @@ void AObstacleSpawner::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 		}
 		ObstacleActor->Deactivate();
 	}
+}
+
+void AObstacleSpawner::PauseOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto FirstOverlapActor = Cast<AAnimalObstacles>(OtherActor);
+
+	if (nullptr != FirstOverlapActor && IsFirstOverlap)
+	{
+		if (FirstOverlapActor->ActorHasTag("Score Calculate Obstacle"))
+		{
+			//UGameplayStatics::SetGamePaused(GetWorld(), true);
+			ObjectPooler->SetSpeed(0.f);
+			IsFirstOverlap = false;
+		}
+	}
+
 }
 
 void AObstacleSpawner::SetCanItemSpawn()
@@ -255,8 +287,12 @@ void AObstacleSpawner::Spawn()
 		CanItemSpawn = false;
 	}
 
+	BALOG(Warning, TEXT("Obstacle Spawn Cooldown : %f"), ObjectPooler->ObstacleSpawnCooldown);
+	if (!IsFirstOverlap)
+	{
+		GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 
-	GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
+	}
 }
 
 

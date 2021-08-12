@@ -12,7 +12,7 @@ class UObjectPoolerComponent;
 class AGM_InGame;
 
 
-DECLARE_MULTICAST_DELEGATE(FSpeedReductionDelegate);
+//DECLARE_MULTICAST_DELEGATE(FSpeedReductionDelegate);
 
 UCLASS()
 class BALLAWAY_API AObstacleSpawner : public AActor
@@ -33,7 +33,14 @@ private:
 	class UBoxComponent* DeactivateVolume;
 
 	UFUNCTION()
-	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void DeactivateOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// 플레이어를 스폰하기 위해 잠시 정지
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* PauseVolume;
+
+	UFUNCTION()
+	void PauseOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	UObjectPoolerComponent* ObjectPooler;
@@ -69,5 +76,8 @@ private :
 
 	bool CanItemSpawn;
 	int32 ItemSpawnLine;
+
+	// PauseVolume 변수
+	bool IsFirstOverlap;
 
 };

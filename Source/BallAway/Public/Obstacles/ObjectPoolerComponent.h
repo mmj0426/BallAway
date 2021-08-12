@@ -30,7 +30,11 @@ public:
 	UFUNCTION()
 	void DescentSpeedIncrease();
 
+	UFUNCTION()
+	void SetSpeed(float Speed);
+
 	FORCEINLINE float GetSpeedReductionRate() const {return SpeedDecreaseRate;}
+	FORCEINLINE float GetDescentSpeed() const {return DescentSpeed;}
 
 	// Skeletal Mesh º¯°æ
 	void SetAnimalObstacleMesh(EPhase CurrentPhase);

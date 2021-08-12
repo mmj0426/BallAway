@@ -114,8 +114,9 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 {	
 	float Speed = 0.f;
 
-	ObstacleSpawnCooldown += SpeedDecreaseRate;
+	//ObstacleSpawnCooldown += SpeedDecreaseRate;
 	DecreaseCount++;
+	ObstacleSpawnCooldown = FMath::Clamp<float>(ObstacleSpawnCooldown + SpeedDecreaseRate, 0.7, 5);
 
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
@@ -124,7 +125,7 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 		PoolableObstacle->SetDescentSpeed(Speed);
 
 		// 속도가 0 이하일 때 GameOver UI 띄움
-		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 1.f)
+		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 3.f)
 		{
 			// 일시 정지 후 UI 띄우기
 			UGameplayStatics::SetGamePaused(GetWorld(), true);
@@ -169,7 +170,8 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 void UObjectPoolerComponent::DescentSpeedIncrease()
 {
 	float Speed = 0.f;
-	ObstacleSpawnCooldown -= SpeedDecreaseRate * DecreaseCount;
+	//ObstacleSpawnCooldown -= SpeedDecreaseRate * DecreaseCount;
+	ObstacleSpawnCooldown = FMath::Clamp<float>(ObstacleSpawnCooldown - SpeedDecreaseRate * DecreaseCount, 0.7,5);
 
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
@@ -182,6 +184,36 @@ void UObjectPoolerComponent::DescentSpeedIncrease()
 	for (ASpeedUpItem* PoolableItem : Items)
 	{
 		PoolableItem->SetDescentSpeed(Speed);
+	}
+
+	TArray<AActor*>MapSpawners;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner", MapSpawners);
+
+	if (MapSpawners.Num() > 0)
+	{
+		auto MapSpawner = Cast<AMapSpawner>(MapSpawners[0]);
+
+		MapSpawner->MapComponent->SetDescentSpeed(Speed);
+	}
+
+}
+
+void UObjectPoolerComponent::SetSpeed(float Speed)
+{
+
+	for (AAnimalObstacles* PoolableObstacle : Pool)
+	{
+		PoolableObstacle->SetDescentSpeed(Speed);
+	}
+
+	TArray<AActor*>MapSpawners;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner", MapSpawners);
+
+	if (MapSpawners.Num() > 0)
+	{
+		auto MapSpawner = Cast<AMapSpawner>(MapSpawners[0]);
+
+		MapSpawner->MapComponent->SetDescentSpeed(Speed);
 	}
 
 }
