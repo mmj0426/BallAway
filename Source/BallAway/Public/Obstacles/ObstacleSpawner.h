@@ -26,7 +26,7 @@ public:
 	virtual void BeginPlay() override;
 
 private:
-
+	UPROPERTY(EditAnywhere)
 	class UBoxComponent* SpawnVolume;
 
 	UPROPERTY(EditAnywhere)

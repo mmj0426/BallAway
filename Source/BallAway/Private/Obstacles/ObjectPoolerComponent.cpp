@@ -116,12 +116,12 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 
 	//ObstacleSpawnCooldown += SpeedDecreaseRate;
 	DecreaseCount++;
-	ObstacleSpawnCooldown = FMath::Clamp<float>(ObstacleSpawnCooldown + SpeedDecreaseRate, 0.7, 5);
+	ObstacleSpawnCooldown = FMath::Clamp<float>(ObstacleSpawnCooldown + SpeedDecreaseRate, 0.5, 5);
 
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		//Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount,0,DescentSpeed);
-		Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() - PoolableObstacle->GetDescentSpeed() * SpeedDecreaseRate, 0, DescentSpeed);
+		Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() * (1- SpeedDecreaseRate), 0, DescentSpeed);
 		PoolableObstacle->SetDescentSpeed(Speed);
 
 		// 속도가 0 이하일 때 GameOver UI 띄움

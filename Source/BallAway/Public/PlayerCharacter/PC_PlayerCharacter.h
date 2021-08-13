@@ -18,6 +18,8 @@ public :
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
+	bool CanPlayerSpawn;
+
 protected:
 
 	// Touch
@@ -36,5 +38,4 @@ private :
 	FVector2D PlayerScreenLocation;
 
 	bool IsPlayerSpawned;
-
 };

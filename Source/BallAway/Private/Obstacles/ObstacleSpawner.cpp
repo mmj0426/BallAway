@@ -63,8 +63,12 @@ void AObstacleSpawner::BeginPlay()
 	Spawn();
 
 	auto PlayerController = Cast<APC_PlayerCharacter>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+
+
 	if (PlayerController)
 	{
+		PlayerController->CanPlayerSpawn = false;
+
 		PlayerController->OnPlayerSpawned.AddLambda([this]()->void
 		{
 			ObjectPooler->SetSpeed(ObjectPooler->GetDescentSpeed());
@@ -194,8 +198,10 @@ void AObstacleSpawner::DeactivateOverlapBegin(UPrimitiveComponent* OverlappedCom
 				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 		}
+
 		ObstacleActor->Deactivate();
 	}
+
 }
 
 void AObstacleSpawner::PauseOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -209,6 +215,13 @@ void AObstacleSpawner::PauseOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			//UGameplayStatics::SetGamePaused(GetWorld(), true);
 			ObjectPooler->SetSpeed(0.f);
 			IsFirstOverlap = false;
+
+			auto PlayerController = Cast<APC_PlayerCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+			if (PlayerController)
+			{
+				PlayerController->CanPlayerSpawn = true;
+			}
 		}
 	}
 
@@ -291,7 +304,6 @@ void AObstacleSpawner::Spawn()
 	if (!IsFirstOverlap)
 	{
 		GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
-
 	}
 }
 
