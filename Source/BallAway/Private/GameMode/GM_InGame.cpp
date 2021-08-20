@@ -24,7 +24,7 @@ AGM_InGame::AGM_InGame()
 
 	// HUD
 	static ConstructorHelpers::FClassFinder<ABAHUD>
-	HudClass(TEXT("/Game/Blueprints/UI/BP_BAHUD.BP_BAHUD_C"));
+	HudClass(TEXT("/Game/UI/BP_BAHUD.BP_BAHUD_C"));
 
 	HUDClass = HudClass.Class;
 
@@ -41,7 +41,7 @@ void AGM_InGame::Save()
 		SaveGameInstance->SaveSlotName = "SaveGame";
 		SaveGameInstance->SaveIndex = 0;
 
-		// TODO : BestScore만 저장하기
+		//BestScore만 저장하기
 		if (BestScore < PlayScore)
 		{
 			SaveGameInstance->FirstScore = PlayScore;

@@ -1,4 +1,3 @@
-#pragma once
 
 #include "../BallAway.h"
 #include "Obstacles/Obstacle.h"

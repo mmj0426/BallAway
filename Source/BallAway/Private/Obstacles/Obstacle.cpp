@@ -3,7 +3,7 @@
 
 #include "Obstacles/Obstacle.h"
 
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -11,24 +11,10 @@ AObstacle::AObstacle()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Set Static Mesh
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObstacleMesh"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-	CubeMesh(TEXT("/Game/BasicAsset/Shape_Cube.Shape_Cube"));
-	if (CubeMesh.Succeeded())
-	{
-		StaticMesh->SetStaticMesh(CubeMesh.Object);
-		StaticMesh->SetRelativeLocation(FVector(0.f,0.f,0.f));
-		StaticMesh->SetWorldScale3D(FVector(1.8f));
-		StaticMesh->SetSimulatePhysics(false);
-	}
-
-	RootComponent = StaticMesh;
-	
-	StaticMesh->SetCollisionProfileName(FName("NoCollision"));
 	SetActorEnableCollision(true);
 
 	// Set Box Collision
+<<<<<<< HEAD
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollision->SetupAttachment(StaticMesh);
 	BoxCollision->SetRelativeLocation(FVector(0.f,0.f,50.f));
@@ -36,6 +22,16 @@ AObstacle::AObstacle()
 	BoxCollision->SetWorldScale3D(FVector(1.8f));
 	BoxCollision->SetCollisionProfileName(FName("OverlapOnlyPawn"));
 
+=======
+	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollision"));
+	SphereCollision->SetupAttachment(StaticMesh);
+	SphereCollision->SetRelativeLocation(FVector(0.f,0.f,30.f));
+	SphereCollision->SetRelativeRotation(FRotator(0.f,0.f,0.f));
+	SphereCollision->SetWorldScale3D(FVector(3.f));
+	SphereCollision->SetCollisionProfileName(FName("OverlapOnlyPawn"));
+
+	RootComponent = SphereCollision;
+>>>>>>> feacher/Obstacles
 }
 
 // Called when the game starts or when spawned

@@ -1,23 +1,26 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "../BallAway.h"
 #include "GameFramework/PlayerController.h"
 #include "PC_PlayerCharacter.generated.h"
 
-/**
- * 
- */
+DECLARE_MULTICAST_DELEGATE(FPlayerSpawned);
+
 UCLASS()
 class BALLAWAY_API APC_PlayerCharacter : public APlayerController
 {
 	GENERATED_BODY()
 
-protected : 
+public : 
+	FPlayerSpawned OnPlayerSpawned;
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
+
+	bool CanPlayerSpawn;
+
+protected:
 
 	// Touch
 	void OnTouchBegin(ETouchIndex::Type TouchIndex, FVector TouchLocation);
@@ -26,6 +29,7 @@ protected :
 
 private : 
 
+	
 	class APlayerCharacter* BAPlayer;
 
 	FVector2D CurrentLocation;
@@ -34,5 +38,4 @@ private :
 	FVector2D PlayerScreenLocation;
 
 	bool IsPlayerSpawned;
-
 };
