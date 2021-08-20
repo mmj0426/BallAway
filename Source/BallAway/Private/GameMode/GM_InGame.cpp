@@ -41,7 +41,7 @@ void AGM_InGame::Save()
 		SaveGameInstance->SaveSlotName = "SaveGame";
 		SaveGameInstance->SaveIndex = 0;
 
-		// TODO : BestScore만 저장하기
+		//BestScore만 저장하기
 		if (BestScore < PlayScore)
 		{
 			SaveGameInstance->FirstScore = PlayScore;
