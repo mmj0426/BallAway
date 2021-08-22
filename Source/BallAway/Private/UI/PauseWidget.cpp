@@ -12,13 +12,12 @@ void UPauseWidget::OnSoundBtnTouched()
 
 void UPauseWidget::OnHomeBtnTouched()
 {
-	//UGameplayStatics::OpenLevel(GetWorld(),TEXT("Cute_Zoo_3_Map"));
+	UGameplayStatics::OpenLevel(GetWorld(),TEXT("Main"));
 }
 
 void UPauseWidget::OnReplayBtnTouched()
 {
 	UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(),TEXT("RestartLevel"));
-	//UGameplayStatics::OpenLevel(GetWorld(),TEXT("Default"));
 }
 
 void UPauseWidget::OnResumeBtnTouched()
