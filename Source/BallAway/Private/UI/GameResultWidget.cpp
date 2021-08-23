@@ -3,6 +3,7 @@
 #include "GameMode/GM_InGame.h"
 
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGameResultWidget::SetPlayScoreText()
 {
@@ -20,10 +21,12 @@ void UGameResultWidget::SetBestScoreText()
 
 void UGameResultWidget::OnHomeBtnTouched()
 {
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Main"));
 }
 
 void UGameResultWidget::OnReplayBtnTouched()
 {
+	UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(), TEXT("RestartLevel"));
 }
 
 void UGameResultWidget::NativeConstruct()

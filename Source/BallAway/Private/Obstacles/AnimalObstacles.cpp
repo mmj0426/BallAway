@@ -7,6 +7,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimationAsset.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AAnimalObstacles::AAnimalObstacles()
 {
@@ -41,6 +42,14 @@ AAnimalObstacles::AAnimalObstacles()
 	AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -30.f), FRotator(0.f, 180.f, 0.f));
 
 	AnimalMesh->SetRelativeScale3D(FVector(0.35f));
+
+	// Camera Shake
+	//static ConstructorHelpers::FClassFinder<UMatineeCameraShake>
+	//CameraShake(TEXT("/Game/Blueprints/CS_CollisionWithPlayer.CS_CollisionWithPlayer"));
+	//if (CameraShake.Succeeded())
+	//{
+	//	CS_CollisionWithPlayer = CameraShake.Class;
+	//}
 }
 
 void AAnimalObstacles::BeginPlay()
@@ -61,6 +70,15 @@ void AAnimalObstacles::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 	if (nullptr != PlayerCharacter)
 	{
+		// 카메라 쉐이크
+		//TArray<AActor*> Cameras;
+		//UGameplayStatics::GetAllActorsWithTag(GetWorld(), "WorldCamera", Cameras);
+		//if (Cameras.Num() > 0)
+		//{
+		//	//UGameplayStatics::PlayWorldCameraShake(GetWorld(),CS_CollisionWithPlayer,Cameras[0]->GetActorLocation(),800.f,2500.f,1.f,false);
+		//	
+		//}
+		//GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CS_CollisionWithPlayer);
 		OnHitPlayer.Broadcast();
 	}
 }
