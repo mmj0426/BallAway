@@ -17,6 +17,12 @@ void UMainMenuWidget::OnCopyrightTouched()
 	CopyrightWidget->AddToViewport();
 }
 
+void UMainMenuWidget::OnGameStartTouched()
+{
+	RemoveFromParent();
+	UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(), TEXT("open InGame"));
+}
+
 void UMainMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -25,13 +31,13 @@ void UMainMenuWidget::NativeConstruct()
 	{
 		CopyrightButton->OnClicked.AddDynamic(this, &UMainMenuWidget::OnCopyrightTouched);
 	}
-}
 
-void UMainMenuWidget::SetBestScoreText(float CurrentScore)
-{
+	if (GameStartButton)
+	{
+		GameStartButton->OnClicked.AddDynamic(this,&UMainMenuWidget::OnGameStartTouched);
+	}
+
 	auto GameMode = Cast<AGM_MainMenu>(GetWorld()->GetAuthGameMode());
 
 	ScoreText = GameMode->BestScore;
-
-	BALOG(Warning, TEXT("ScoreText : %f"), ScoreText);
 }

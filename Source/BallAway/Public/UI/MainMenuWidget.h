@@ -21,11 +21,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	class UButton* CopyrightButton;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	class UButton* GameStartButton;
+
 	UFUNCTION()
 	void OnCopyrightTouched();
 
 	UFUNCTION()
-	void SetBestScoreText(float CurrentScore);
+	void OnGameStartTouched();
 
 public:
 	virtual void NativeConstruct() override;

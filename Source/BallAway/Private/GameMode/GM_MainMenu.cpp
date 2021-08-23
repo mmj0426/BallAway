@@ -33,8 +33,7 @@ float AGM_MainMenu::LoadScore()
 		}
 		else
 		{
-			return LoadGameInstance->FirstScore;
-			
+			return LoadGameInstance->FirstScore;	
 		}
 	}
 
