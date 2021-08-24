@@ -50,4 +50,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	class UAnimationAsset* OstrichRunAnim;
 
+	// Camera Shake
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera Shake")
+	TSubclassOf<UMatineeCameraShake> CS_CollisionWithPlayer;
+
 };

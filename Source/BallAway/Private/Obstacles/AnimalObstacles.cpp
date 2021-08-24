@@ -6,7 +6,8 @@
 #include "PlayerCharacter/PlayerCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimationAsset.h"
-#include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AAnimalObstacles::AAnimalObstacles()
 {
@@ -36,18 +37,26 @@ AAnimalObstacles::AAnimalObstacles()
 		OstrichMesh = SK_Ostrich.Object;
 	}	
 		
-	AnimalMesh->SetupAttachment(BoxCollision);
+	AnimalMesh->SetupAttachment(SphereCollision);
 	AnimalMesh->SetSkeletalMesh(MuleMesh);
-	AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -33.f), FRotator(0.f, 180.f, 0.f));
+	AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -30.f), FRotator(0.f, 180.f, 0.f));
 
 	AnimalMesh->SetRelativeScale3D(FVector(0.35f));
+
+	// Camera Shake
+	//static ConstructorHelpers::FClassFinder<UMatineeCameraShake>
+	//CameraShake(TEXT("/Game/Blueprints/CS_CollisionWithPlayer.CS_CollisionWithPlayer"));
+	//if (CameraShake.Succeeded())
+	//{
+	//	CS_CollisionWithPlayer = CameraShake.Class;
+	//}
 }
 
 void AAnimalObstacles::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AAnimalObstacles::OnOverlapBegin);
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AAnimalObstacles::OnOverlapBegin);
 }
 
 void AAnimalObstacles::Tick(float DeltaTime)
@@ -61,6 +70,15 @@ void AAnimalObstacles::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 
 	if (nullptr != PlayerCharacter)
 	{
+		// 카메라 쉐이크
+		//TArray<AActor*> Cameras;
+		//UGameplayStatics::GetAllActorsWithTag(GetWorld(), "WorldCamera", Cameras);
+		//if (Cameras.Num() > 0)
+		//{
+		//	//UGameplayStatics::PlayWorldCameraShake(GetWorld(),CS_CollisionWithPlayer,Cameras[0]->GetActorLocation(),800.f,2500.f,1.f,false);
+		//	
+		//}
+		//GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CS_CollisionWithPlayer);
 		OnHitPlayer.Broadcast();
 	}
 }
@@ -87,7 +105,7 @@ void AAnimalObstacles::SetAnimalMesh(EPhase CurrentPhase)
 	case EPhase::Phase2:
 		BALOG(Warning, TEXT("Ostrich"));
 		AnimalMesh->SetSkeletalMesh(OstrichMesh);
-		AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, 33.f), FRotator(0.f, 180.f, 0.f));
+		AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -33.f), FRotator(0.f, 180.f, 0.f));
 		AnimalMesh->SetRelativeScale3D(FVector(0.5f));
 
 		AnimalMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
@@ -102,7 +120,7 @@ void AAnimalObstacles::SetAnimalMesh(EPhase CurrentPhase)
 	case EPhase::Phase3:
 		BALOG(Warning, TEXT("Bull"));
 		AnimalMesh->SetSkeletalMesh(BullMesh);
-		AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, 33.f), FRotator(0.f, 180.f, 0.f));
+		AnimalMesh->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -33.f), FRotator(0.f, 180.f, 0.f));
 		AnimalMesh->SetRelativeScale3D(FVector(0.35f));
 
 		AnimalMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);

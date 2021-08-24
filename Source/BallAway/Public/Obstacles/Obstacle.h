@@ -36,5 +36,5 @@ public:
 
 	// Collision
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
-	class UBoxComponent* BoxCollision;
+	class USphereComponent* SphereCollision;
 };

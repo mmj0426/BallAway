@@ -6,7 +6,9 @@
 #include "GameFramework/HUD.h"
 #include "BAHUD.generated.h"
 
-class UScoreWidget;
+class UGameResultWidget;
+class UInGameWidget;
+class UPauseWidget;
 
 /**
  * 
@@ -21,21 +23,29 @@ public :
 
 	virtual void BeginPlay();
 
-	// 플레이 중 스코어
+	// InGame UI
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UScoreWidget> PlayScoreWidget;
+	TSubclassOf<UInGameWidget> InGameWidgetClass;
 
-	// Load Best Score
+	// Game Result UI
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UScoreWidget> GameResultWidget;
+	TSubclassOf<UGameResultWidget> GameResultWidgetClass;
 
-	UScoreWidget* GetPlayScoreWidget();
-	UScoreWidget* GetGameResultWidget();
+	// PauseMenu
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UPauseWidget> PauseMenuWidgetClass;
+
+	UInGameWidget* GetInGameWidget();
+	UGameResultWidget* GetGameResultWidget();
+	UPauseWidget* GetPauseMenuWidget();
 
 private : 
 	UPROPERTY()
-	class UScoreWidget* PlayScoreText;
+	class UInGameWidget* InGameWidget;
 
 	UPROPERTY()
-	class UScoreWidget* ResultScoreText;
+	class UGameResultWidget* GameResultWidget;
+
+	UPROPERTY()
+	class UPauseWidget* PauseMenuWidget;
 };

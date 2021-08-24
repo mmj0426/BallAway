@@ -5,6 +5,7 @@
 #include "PlayerCharacter/PlayerCharacter.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 void APC_PlayerCharacter::BeginPlay()
 {
@@ -27,14 +28,16 @@ void APC_PlayerCharacter::Tick(float DeltaTime)
 	//BALOG(Warning, TEXT("Touch : %f, Player : %f"), CurrentLocation.X, PlayerScreenLocation.X);
 	//BALOG(Error, TEXT("MoveDirection.X : %f"), FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X));
 
-	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 10.f && IsPlayerSpawned)
+	if (FMath::Abs(CurrentLocation.X - PlayerScreenLocation.X) > 30.f && IsPlayerSpawned)
 	{
 		if (MoveDirection.X < 0.f)
 		{
+			BAPlayer->GetCharacterMovement()->Velocity = FVector(1000.f,0.f,0.f);
 			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), -1.f);
 		}
 		else if (MoveDirection.X > 0.f)
 		{
+			BAPlayer->GetCharacterMovement()->Velocity = FVector(-1000.f, 0.f, 0.f);
 			BAPlayer->AddMovementInput(FRotationMatrix(FRotator(0.f, GetControlRotation().Yaw, 0.f)).GetUnitAxis(EAxis::Y), 1.f);
 		}
 	}
@@ -58,7 +61,7 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 	MoveDirection = (CurrentLocation - PlayerScreenLocation).GetSafeNormal();
 	ProjectWorldLocationToScreen(BAPlayer->GetActorLocation(), PlayerScreenLocation);
 
-	if (!IsPlayerSpawned)
+	if (!IsPlayerSpawned && CanPlayerSpawn)
 	{
 		FHitResult Hit;
 		FVector2D ScreenLocation = FVector2D(CurrentLocation.X, PlayerScreenLocation.Y);
@@ -70,6 +73,8 @@ void APC_PlayerCharacter::OnTouchBegin(ETouchIndex::Type TouchIndex, FVector Tou
 			BAPlayer->SetActorHiddenInGame(false);
 
 			IsPlayerSpawned = true;
+
+			OnPlayerSpawned.Broadcast();
 		}
 
 	}
