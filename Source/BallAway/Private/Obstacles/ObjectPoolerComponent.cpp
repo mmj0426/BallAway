@@ -26,6 +26,26 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 	SpeedDecreaseRate = 0.02f;
 	DecreaseCount = 0;
 	SpeedIncreaseRate = 0.1f;
+
+	WalkAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("WalkAudio"));
+	RunAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("RunAudio"));
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>
+	WalkSound(TEXT("/Game/Assets/Sounds/Walk_Cue.Walk_Cue"));
+	if (WalkSound.Succeeded())
+	{
+		Walk_Sound = WalkSound.Object;
+		WalkAudio->SetSound(Walk_Sound);
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>
+	RunSound(TEXT("/Game/Assets/Sounds/Run_Cue.Run_Cue"));
+	if (RunSound.Succeeded())
+	{
+		Run_Sound = RunSound.Object;
+		RunAudio->SetSound(Run_Sound);
+	}
+
 }
 
 void UObjectPoolerComponent::BeginPlay()
@@ -163,6 +183,30 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 		MapSpawner->MapComponent->SetDescentSpeed(Speed);
 	}
 
+	if (Speed < 37.f)
+	{
+		if (RunAudio->IsPlaying())
+		{
+			RunAudio->Stop();
+		}
+		if (!WalkAudio->IsPlaying())
+		{
+			WalkAudio->Play(1.f);
+		}
+		
+	}
+	else
+	{
+		if (WalkAudio->IsPlaying())
+		{
+			WalkAudio->Stop();
+			
+		}
+		if (!RunAudio->IsPlaying())
+		{
+			RunAudio->Play(1.f); 
+		}
+	}
 	//BALOG(Warning,TEXT("ObstacleSpawnCooldown : %f"), ObstacleSpawnCooldown);
 }
 
@@ -195,6 +239,30 @@ void UObjectPoolerComponent::DescentSpeedIncrease()
 		MapSpawner->MapComponent->SetDescentSpeed(Speed);
 	}
 
+	if (Speed < 37.f)
+	{
+		if (RunAudio->IsPlaying())
+		{
+			RunAudio->Stop();
+		}
+		if (!WalkAudio->IsPlaying())
+		{
+			WalkAudio->Play(1.f);
+		}
+
+	}
+	else
+	{
+		if (WalkAudio->IsPlaying())
+		{
+			WalkAudio->Stop();
+
+		}
+		if (!RunAudio->IsPlaying())
+		{
+			RunAudio->Play(1.f);
+		}
+	}
 }
 
 void UObjectPoolerComponent::SetSpeed(float Speed)
@@ -214,7 +282,6 @@ void UObjectPoolerComponent::SetSpeed(float Speed)
 
 		MapSpawner->MapComponent->SetDescentSpeed(Speed);
 	}
-
 }
 
 void UObjectPoolerComponent::SetAnimalObstacleMesh(EPhase CurrentPhase)

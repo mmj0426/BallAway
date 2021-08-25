@@ -2,6 +2,10 @@
 
 #include "../BallAway.h"
 #include "Components/ActorComponent.h"
+
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
+
 #include "Obstacles/PhaseEnum.h"
 #include "ObjectPoolerComponent.generated.h"
 
@@ -73,4 +77,9 @@ private:
 		float SpeedIncreaseRate;
 
 
+	UAudioComponent* WalkAudio;
+	UAudioComponent* RunAudio;
+
+	USoundCue* Walk_Sound;
+	USoundCue* Run_Sound;
 };
