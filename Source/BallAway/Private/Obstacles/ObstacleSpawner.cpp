@@ -1,11 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Obstacles/ObstacleSpawner.h"
 
 #include "PlayerCharacter/PC_PlayerCharacter.h"
 #include "ObjectPoolerComponent.h"
 #include "Obstacle.h"
+#include "Obstacles/AnimalObstacles.h"
 #include "BAGameInstance.h"
 #include "GM_InGame.h"
 #include "Item/SpeedUpItem.h"
@@ -34,17 +32,11 @@ AObstacleSpawner::AObstacleSpawner()
 
 	DeactivateVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("DeactivateVolume"));
 	DeactivateVolume->SetupAttachment(RootComponent);
-<<<<<<< HEAD
-	DeactivateVolume->SetRelativeScale3D(FVector(0.5f,0.5f,0.5f));
-	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::OnOverlapBegin);
-	//DeactivateVolume->SetRelativeLocation(FVector(SpawnVolume->Bounds.BoxExtent.X, -SpawnVolume->Bounds.BoxExtent.Y, 20.f));
-=======
 	DeactivateVolume->SetRelativeScale3D(FVector(0.5f));
 
 	PauseVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("PauseVolume"));
 	PauseVolume->SetupAttachment(RootComponent);
 	IsFirstOverlap = true;
->>>>>>> feacher/Obstacles
 
 	ObjectPooler = CreateDefaultSubobject<UObjectPoolerComponent>(TEXT("ObjectPooler"));
 
@@ -59,18 +51,15 @@ AObstacleSpawner::AObstacleSpawner()
 void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-<<<<<<< HEAD
-=======
 
 	ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 
 	DeactivateVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::DeactivateOverlapBegin);
 	PauseVolume->OnComponentBeginOverlap.AddDynamic(this, &AObstacleSpawner::PauseOverlapBegin);
->>>>>>> feacher/Obstacles
-	
+
 	Spawn();
 
-	auto PlayerController = Cast<APC_PlayerCharacter>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+	auto PlayerController = Cast<APC_PlayerCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 
 	if (PlayerController)
@@ -78,13 +67,13 @@ void AObstacleSpawner::BeginPlay()
 		PlayerController->CanPlayerSpawn = false;
 
 		PlayerController->OnPlayerSpawned.AddLambda([this]()->void
-		{
-			ObjectPooler->SetSpeed(ObjectPooler->GetDescentSpeed());
-			BALOG(Error, TEXT("Descent Speed : %f "), ObjectPooler->GetDescentSpeed());
-			GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this, &AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
-			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
-				
-		});
+			{
+				ObjectPooler->SetSpeed(ObjectPooler->GetDescentSpeed());
+				BALOG(Error, TEXT("Descent Speed : %f "), ObjectPooler->GetDescentSpeed());
+				GetWorldTimerManager().SetTimer(ItemSpawnCooldownTimer, this, &AObstacleSpawner::SetCanItemSpawn, ItemSpawnCooldown, true);
+				GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
+
+			});
 	}
 
 }
@@ -93,11 +82,11 @@ void AObstacleSpawner::DecideObstacleSize()
 {
 	auto BAGameInstance = Cast<UBAGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-	int32 RandomNum = FMath::RandRange(0,99);
+	int32 RandomNum = FMath::RandRange(0, 99);
 	//UE_LOG(LogTemp, Warning, TEXT("Random Number : %d."), RandomNum);
 
 	// 페이즈에 따른 장애물 크기 확률 적용
-	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetObstacleSizeProb(2,CurrentPhase))
+	if (RandomNum >= 0 && RandomNum < BAGameInstance->GetObstacleSizeProb(2, CurrentPhase))
 	{
 		SpawnObstacleNumber = 2;
 	}
@@ -121,7 +110,7 @@ void AObstacleSpawner::DecideObstacleSize()
 	{
 		SpawnObstacleNumber = 6;
 	}
-	
+
 	//UE_LOG(LogTemp, Warning, TEXT("Obstacle Number : %d."), SpawnObstacleNumber);
 	return;
 
@@ -159,20 +148,20 @@ void AObstacleSpawner::ChooseSpawnLine()
 
 	if (CanItemSpawn)
 	{
-		int32 RandomIndex = FMath::RandRange(0, SpawnLineNumber.Num()-1);
+		int32 RandomIndex = FMath::RandRange(0, SpawnLineNumber.Num() - 1);
 		ItemSpawnLine = SpawnLineNumber[RandomIndex];
 
 		BALOG(Error, TEXT("Item Spawn Line : %d"), ItemSpawnLine);
 
-		SpawnLineNumber.RemoveAt(RandomIndex);		
+		SpawnLineNumber.RemoveAt(RandomIndex);
 	}
 
-	
+
 }
 
 void AObstacleSpawner::DeactivateOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto ObstacleActor = Cast<AObstacle>(OtherActor);
+	auto ObstacleActor = Cast<AAnimalObstacles>(OtherActor);
 
 	if (nullptr != ObstacleActor)
 	{
@@ -184,8 +173,8 @@ void AObstacleSpawner::DeactivateOverlapBegin(UPrimitiveComponent* OverlappedCom
 			GameMode->PlayScore += 0.25f;
 
 			// UI : HUD가져와서 Score변수 갱신
-			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(),0)->GetHUD())->GetInGameWidget();
-			
+			auto ScoreWidget = Cast<ABAHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD())->GetInGameWidget();
+
 			ScoreWidget->SetPlayScoreText(GameMode->PlayScore);
 
 			// 1점을 얻을 때마다 속력 감소
@@ -198,10 +187,12 @@ void AObstacleSpawner::DeactivateOverlapBegin(UPrimitiveComponent* OverlappedCom
 			if (GameMode->PlayScore == 40.25)
 			{
 				CurrentPhase = EPhase::Phase2;
+				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 			if (GameMode->PlayScore == 90.25)
 			{
 				CurrentPhase = EPhase::Phase3;
+				ObjectPooler->SetAnimalObstacleMesh(CurrentPhase);
 			}
 		}
 
@@ -258,7 +249,7 @@ void AObstacleSpawner::Spawn()
 
 	for (int i = 0; i < SpawnLineNumber.Num(); i++)
 	{
-		AObstacle* ObstacleActor = ObjectPooler->GetPooledObstacle();
+		AAnimalObstacles* ObstacleActor = ObjectPooler->GetPooledObstacle();
 
 		// Obstacle 클래스가 null 이면 오류 띄우고 return
 		if (nullptr == ObstacleActor)
@@ -267,14 +258,14 @@ void AObstacleSpawner::Spawn()
 			GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 			return;
 		}
-		
+
 		// Obstacle 액터 위치 계산 및 보이게 하기
 		float Distance = 2 * SpawnVolume->Bounds.BoxExtent.X;
-		float ObstacleXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1/2 - Distance / LineNumMax * SpawnLineNumber[i];
+		float ObstacleXLoc = SpawnVolume->Bounds.BoxExtent.X - Distance / LineNumMax * 1 / 2 - Distance / LineNumMax * SpawnLineNumber[i];
 		//UE_LOG(LogTemp, Warning, TEXT("Spawn Number : %d."), SpawnLineNumber[i]);
 
 		FVector ActorLocation = FVector(ObstacleXLoc, SpawnVolume->Bounds.BoxExtent.Y, 90.f);
-		
+
 		ObstacleActor->SetActorLocation(ActorLocation);
 		ObstacleActor->SetActive(true);
 
@@ -312,5 +303,3 @@ void AObstacleSpawner::Spawn()
 		GetWorldTimerManager().SetTimer(ObstacleSpawnCooldownTimer, this, &AObstacleSpawner::Spawn, ObjectPooler->ObstacleSpawnCooldown, false);
 	}
 }
-
-

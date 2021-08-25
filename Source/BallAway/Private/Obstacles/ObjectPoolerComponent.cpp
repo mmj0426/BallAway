@@ -1,7 +1,9 @@
-
 #include "Obstacles/ObjectPoolerComponent.h"
 #include "Obstacle.h"
+#include "Obstacles/AnimalObstacles.h"
 #include "Item/SpeedUpItem.h"
+#include "Map/MapSpawner.h"
+#include "Map/MapSpawnerComponent.h"
 
 #include "Math/UnrealMathUtility.h"
 #include "Kismet/GameplayStatics.h"
@@ -22,6 +24,7 @@ UObjectPoolerComponent::UObjectPoolerComponent()
 
 	DescentSpeed = 2.f;
 	SpeedDecreaseRate = 0.02f;
+	DecreaseCount = 0;
 	SpeedIncreaseRate = 0.1f;
 }
 
@@ -36,9 +39,10 @@ void UObjectPoolerComponent::BeginPlay()
 			// 생성된 오브젝트는 비활성인 상태로 Pool에 들어감
 			for (int i = 0; i < PoolSize; i++)
 			{
-				AObstacle* PoolableObstacle = World->SpawnActor<AObstacle>(ObstacleSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
+				AAnimalObstacles* PoolableObstacle = World->SpawnActor<AAnimalObstacles>(ObstacleSubClass, FVector().ZeroVector, FRotator().ZeroRotator);
 				PoolableObstacle->SetActive(false);
 				PoolableObstacle->SetDescentSpeed(DescentSpeed);
+				PoolableObstacle->OnHitPlayer.AddUObject(this, &UObjectPoolerComponent::DescentSpeedDecrease);
 				if (i == 0)
 				{
 					PoolableObstacle->Tags.Add("GameOver Obstacle");
@@ -65,8 +69,6 @@ void UObjectPoolerComponent::BeginPlay()
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	// Map Speed Synchronize
 	TArray<AActor*>MapSpawners;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner", MapSpawners);
@@ -79,13 +81,12 @@ void UObjectPoolerComponent::BeginPlay()
 		MapSpawner->MapComponent->SetDescentSpeed(DescentSpeed);
 	}
 
->>>>>>> feacher/Obstacles
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 
-AObstacle* UObjectPoolerComponent::GetPooledObstacle()
+AAnimalObstacles* UObjectPoolerComponent::GetPooledObstacle()
 {
-	for (AObstacle* PoolableObstacle : Pool)
+	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		if (!PoolableObstacle->IsActive())
 		{
@@ -109,14 +110,7 @@ ASpeedUpItem* UObjectPoolerComponent::GetPooledItem()
 }
 
 void UObjectPoolerComponent::DescentSpeedDecrease()
-{	
-<<<<<<< HEAD
-	ObstacleSpawnCooldown += SpeedIncreaseRate;
-
-	for (AObstacle* PoolableObstacle : Pool)
-	{
-		PoolableObstacle->SetDescentSpeed(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
-=======
+{
 	float Speed = 0.f;
 
 	//ObstacleSpawnCooldown += SpeedDecreaseRate;
@@ -126,9 +120,8 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		//Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate * DecreaseCount,0,DescentSpeed);
-		Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() * (1- SpeedDecreaseRate), 0, DescentSpeed);
+		Speed = FMath::Clamp<float>(PoolableObstacle->GetDescentSpeed() * (1 - SpeedDecreaseRate), 0, DescentSpeed);
 		PoolableObstacle->SetDescentSpeed(Speed);
->>>>>>> feacher/Obstacles
 
 		// 속도가 0 이하일 때 GameOver UI 띄움
 		if (PoolableObstacle->ActorHasTag("GameOver Obstacle") && PoolableObstacle->GetDescentSpeed() <= 3.f)
@@ -156,14 +149,12 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 
 	for (ASpeedUpItem* PoolableItem : Items)
 	{
-		PoolableItem->SetDescentSpeed(PoolableItem->GetDescentSpeed() - DescentSpeed * SpeedDecreaseRate);
+		PoolableItem->SetDescentSpeed(Speed);
 	}
-<<<<<<< HEAD
-=======
 
 	// Map Speed Synchronize
 	TArray<AActor*>MapSpawners;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner",MapSpawners);
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "MapSpawner", MapSpawners);
 
 	if (MapSpawners.Num() > 0)
 	{
@@ -173,16 +164,15 @@ void UObjectPoolerComponent::DescentSpeedDecrease()
 	}
 
 	//BALOG(Warning,TEXT("ObstacleSpawnCooldown : %f"), ObstacleSpawnCooldown);
->>>>>>> feacher/Obstacles
 }
 
 void UObjectPoolerComponent::DescentSpeedIncrease()
 {
 	float Speed = 0.f;
 	//ObstacleSpawnCooldown -= SpeedDecreaseRate * DecreaseCount;
-	ObstacleSpawnCooldown = FMath::Clamp<float>(ObstacleSpawnCooldown - SpeedDecreaseRate * DecreaseCount, 0.7,5);
+	ObstacleSpawnCooldown = FMath::Clamp<float>(ObstacleSpawnCooldown - SpeedDecreaseRate * DecreaseCount, 0.7, 5);
 
-	for (AObstacle* PoolableObstacle : Pool)
+	for (AAnimalObstacles* PoolableObstacle : Pool)
 	{
 		Speed = PoolableObstacle->GetDescentSpeed() + DescentSpeed * SpeedIncreaseRate;
 
@@ -225,4 +215,12 @@ void UObjectPoolerComponent::SetSpeed(float Speed)
 		MapSpawner->MapComponent->SetDescentSpeed(Speed);
 	}
 
+}
+
+void UObjectPoolerComponent::SetAnimalObstacleMesh(EPhase CurrentPhase)
+{
+	for (AAnimalObstacles* AnimalObstacles : Pool)
+	{
+		AnimalObstacles->SetAnimalMesh(CurrentPhase);
+	}
 }

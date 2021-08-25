@@ -6,7 +6,7 @@ UMapSpawnerComponent::UMapSpawnerComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	SpawnSize = 4;
+	SpawnSize = 10;
 }
 
 void UMapSpawnerComponent::BeginPlay()
