@@ -30,6 +30,7 @@ void AMapSpawner::BeginPlay()
 	Super::BeginPlay();
 
 	MapSpawn(LeftSpawnVolume->GetComponentLocation().Y, RightSpawnVolume->GetComponentLocation().Y);
+
 	
 }
 
