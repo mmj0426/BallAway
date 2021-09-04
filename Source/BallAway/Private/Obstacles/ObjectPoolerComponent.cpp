@@ -239,30 +239,30 @@ void UObjectPoolerComponent::DescentSpeedIncrease()
 		MapSpawner->MapComponent->SetDescentSpeed(Speed);
 	}
 
-	if (Speed < 37.f)
-	{
-		if (RunAudio->IsPlaying())
-		{
-			RunAudio->Stop();
-		}
-		if (!WalkAudio->IsPlaying())
-		{
-			WalkAudio->Play(1.f);
-		}
+	//if (Speed < 37.f)
+	//{
+	//	if (RunAudio->IsPlaying())
+	//	{
+	//		RunAudio->Stop();
+	//	}
+	//	if (!WalkAudio->IsPlaying())
+	//	{
+	//		WalkAudio->Play(1.f);
+	//	}
 
-	}
-	else
-	{
-		if (WalkAudio->IsPlaying())
-		{
-			WalkAudio->Stop();
+	//}
+	//else
+	//{
+	//	if (WalkAudio->IsPlaying())
+	//	{
+	//		WalkAudio->Stop();
 
-		}
-		if (!RunAudio->IsPlaying())
-		{
-			RunAudio->Play(1.f);
-		}
-	}
+	//	}
+	//	if (!RunAudio->IsPlaying())
+	//	{
+	//		RunAudio->Play(1.f);
+	//	}
+	//}
 }
 
 void UObjectPoolerComponent::SetSpeed(float Speed)
